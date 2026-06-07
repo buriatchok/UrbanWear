@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Адмін-панель UrbanWear для керування магазином." />
+  <title>Адмін-панель - UrbanWear</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/admin-dashboard.css" />
+</head>
+<body class="admin-page">
+  <section class="admin-login" id="adminLoginGate">
+    <form class="auth-card auth-card--admin" id="adminGateForm">
+      <p class="label">Панель керування</p>
+      <h1>Вхід адміністратора</h1>
+      <p class="auth-note">Демо-доступ: admin@urbanwear.local / admin123</p>
+      <label>Email <input type="email" name="email" value="admin@urbanwear.local" required /></label>
+      <label>Пароль <input type="password" name="password" value="admin123" required /></label>
+      <button class="btn btn--dark" type="submit">Увійти</button>
+      <a href="index.html" class="btn btn--light">Назад на сайт</a>
+      <p class="form-message" id="adminLoginMessage" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <main class="admin-shell admin-hidden" id="adminDashboard">
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-sidebar__brand">
+        <a href="index.html" class="logo">UrbanWear</a>
+        <p>Admin</p>
+      </div>
+
+      <nav class="admin-tabs" aria-label="Розділи адмін-панелі">
+        <button class="admin-tab is-active" type="button" data-admin-tab="dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Панель</button>
+        <button class="admin-tab" type="button" data-admin-tab="orders"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M8 9h8M8 13h8M8 17h5"/></svg>Замовлення</button>
+        <button class="admin-tab" type="button" data-admin-tab="products"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9h12l1 12H5zM9 10V7a3 3 0 0 1 6 0v3"/></svg>Товари</button>
+        <button class="admin-tab" type="button" data-admin-tab="categories"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Категорії</button>
+        <button class="admin-tab" type="button" data-admin-tab="customers"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M2 21a7 7 0 0 1 14 0zM16 5a4 4 0 0 1 0 8M17 15a6 6 0 0 1 5 6"/></svg>Покупці</button>
+        <button class="admin-tab" type="button" data-admin-tab="analytics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V6M16 20V3M22 20H2"/></svg>Аналітика</button>
+        <button class="admin-tab" type="button" data-admin-tab="marketing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a2 2 0 0 0 2 2h2l2 5h3l-2-5 8-4V5L7 9H5a2 2 0 0 0-2 2zM20 7l2-2M20 10h3M20 13l2 2"/></svg>Маркетинг</button>
+        <button class="admin-tab" type="button" data-admin-tab="content"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l5 5v15H6zM14 2v6h6M9 13h7M9 17h7"/></svg>Контент</button>
+        <button class="admin-tab" type="button" data-admin-tab="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1z"/></svg>Налаштування</button>
+      </nav>
+
+      <div class="admin-sidebar__bottom">
+        <div class="admin-profile-card">
+          <div class="admin-profile-card__avatar">A</div>
+          <div>
+            <strong>UrbanWear Admin</strong>
+            <span>admin@urbanwear.local</span>
+          </div>
+        </div>
+        <div class="admin-sidebar__actions">
+          <a href="index.html" class="admin-site-link">Відкрити сайт</a>
+          <button class="admin-site-link" type="button" id="adminLogoutButton">Вийти</button>
+        </div>
+      </div>
+    </aside>
+
+    <section class="admin-workspace">
+      <div class="admin-topbar">
+        <button class="admin-menu-button" type="button" aria-label="Приховати меню" aria-controls="adminSidebar" aria-expanded="true">
+          <span></span><span></span><span></span>
+        </button>
+        <label class="admin-search">
+          <span>Пошук товарів</span>
+          <input type="search" id="adminSearchInput" placeholder="Пошук товарів..." />
+        </label>
+        <div class="admin-notification" id="adminOrderBadge" aria-label="Нові замовлення">0</div>
+      </div>
+
+      <div class="admin-content">
+        <header class="admin-header">
+          <div>
+            <p class="label">Адмін-панель</p>
+            <h1 id="adminSectionTitle">Панель</h1>
+            <p id="adminSectionSubtitle">Ключові показники та стан магазину</p>
+          </div>
+          <p class="admin-status" id="adminStatus" role="status" aria-live="polite">Готово до роботи</p>
+        </header>
+
+        <section class="admin-panel is-active" data-admin-panel="dashboard">
+          <div class="admin-dashboard-actions">
+            <label>Період
+              <select aria-label="Період аналітики"><option>Увесь час</option></select>
+            </label>
+            <label>Порівняння
+              <select aria-label="Порівняння"><option>Без порівняння</option></select>
+            </label>
+          </div>
+          <div class="admin-metrics" id="adminMetrics"></div>
+          <div class="admin-dashboard-grid">
+            <article class="admin-card">
+              <div class="admin-card__header"><h2>Останні замовлення</h2><button type="button" data-open-tab="orders">Переглянути всі</button></div>
+              <div id="recentOrdersReport"></div>
+            </article>
+            <article class="admin-card">
+              <div class="admin-card__header"><h2>Найпопулярніші товари</h2><button type="button" data-open-tab="products">Товари</button></div>
+              <div id="topProductsReport"></div>
+            </article>
+            <article class="admin-card">
+              <div class="admin-card__header"><h2>Джерела переходів</h2></div>
+              <div id="linkClicksReport"></div>
+            </article>
+            <article class="admin-card">
+              <div class="admin-card__header"><h2>Підсумок показників</h2></div>
+              <div id="performanceReport"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="orders">
+          <div class="admin-page-toolbar">
+            <p>Керуйте замовленнями, оплатою, доставкою та статусами.</p>
+            <button class="btn btn--light" type="button" id="refreshOrdersButton">Оновити</button>
+          </div>
+          <div class="admin-order-stats" id="adminOrderStats"></div>
+          <div class="admin-table-card" id="adminOrdersList"></div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="products">
+          <div class="admin-page-toolbar">
+            <div class="admin-product-filters">
+              <select id="adminCategoryFilter" aria-label="Фільтр категорій">
+                <option value="all">Усі категорії</option>
+                <option value="hoodies">Худі</option>
+                <option value="t-shirts">Футболки</option>
+                <option value="pants">Штани</option>
+                <option value="accessories">Аксесуари</option>
+              </select>
+            </div>
+            <button class="btn btn--dark" type="button" id="newProductButton">Додати товар</button>
+          </div>
+          <div class="admin-product-list" id="adminProductList"></div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="categories">
+          <div class="admin-table-card" id="adminCategoriesList"></div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="customers">
+          <div class="admin-table-card" id="adminCustomersList"></div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="analytics">
+          <div class="admin-page-toolbar">
+            <p>Окрема деталізація відвідувань, переходів і активності товарів.</p>
+            <button class="btn btn--light" type="button" id="resetAnalyticsButton">Очистити аналітику</button>
+          </div>
+          <div class="admin-report-grid">
+            <article class="admin-card">
+              <div class="admin-card__header"><h2>Відвідування сторінок</h2></div>
+              <div id="pageVisitsReport"></div>
+            </article>
+            <article class="admin-card">
+              <div class="admin-card__header"><h2>Переходи за посиланнями</h2></div>
+              <div id="analyticsLinkClicksReport"></div>
+            </article>
+            <article class="admin-card admin-card--wide">
+              <div class="admin-card__header"><h2>Активність товарів</h2></div>
+              <div class="admin-table-scroll" id="productsReport"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="marketing">
+          <div class="admin-editor-card">
+            <div class="admin-card__header">
+              <div><h2>Промо-тексти</h2><p>Тексти, які допомагають покупцю перейти до замовлення.</p></div>
+              <button class="btn btn--dark" type="button" data-save-settings>Зберегти</button>
+            </div>
+            <div class="admin-form-grid">
+              <label class="admin-field-wide">Текст примітки біля товару <textarea rows="3" data-setting="productNote"></textarea></label>
+              <label class="admin-field-wide">CTA текст <textarea rows="3" data-setting="ctaText"></textarea></label>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="content">
+          <div class="admin-editor-card">
+            <div class="admin-card__header">
+              <div><h2>Тексти сайту</h2><p>Відредагуйте інформацію, яка відображається покупцям.</p></div>
+              <button class="btn btn--dark" type="button" data-save-settings>Зберегти зміни</button>
+            </div>
+            <fieldset class="admin-fieldset">
+              <legend>Головний екран</legend>
+              <div class="admin-form-grid">
+                <label>Назва бренду <input type="text" data-setting="brandName" /></label>
+                <label>Підпис у hero <input type="text" data-setting="heroKicker" /></label>
+                <label class="admin-field-wide">Головний заголовок <textarea rows="2" data-setting="heroTitle"></textarea></label>
+                <label class="admin-field-wide">Текст у hero <textarea rows="3" data-setting="heroText"></textarea></label>
+                <label>Підпис візуального блоку <input type="text" data-setting="heroVisualText" /></label>
+              </div>
+            </fieldset>
+            <fieldset class="admin-fieldset">
+              <legend>Про бренд і футер</legend>
+              <div class="admin-form-grid">
+                <label>Текст футера <input type="text" data-setting="footerText" /></label>
+                <label class="admin-field-wide">Заголовок про бренд <textarea rows="2" data-setting="aboutTitle"></textarea></label>
+                <label class="admin-field-wide">Опис бренду <textarea rows="4" data-setting="aboutText"></textarea></label>
+              </div>
+            </fieldset>
+            <fieldset class="admin-fieldset">
+              <legend>Контакти та доставка</legend>
+              <div class="admin-form-grid">
+                <label>Telegram URL <input type="url" data-setting="telegramUrl" /></label>
+                <label>Viber URL <input type="text" data-setting="viberUrl" /></label>
+                <label>Телефон <input type="text" data-setting="phone" /></label>
+                <label>Email <input type="email" data-setting="email" /></label>
+                <label class="admin-field-wide">Доставка <textarea rows="4" data-setting="deliveryBody"></textarea></label>
+                <label class="admin-field-wide">Оплата <textarea rows="4" data-setting="paymentBody"></textarea></label>
+              </div>
+            </fieldset>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="settings">
+          <div class="admin-settings-grid">
+            <article class="admin-action-card">
+              <div><h2>Зберегти зміни</h2><p>Записати поточні тексти й налаштування у браузері.</p></div>
+              <button class="btn btn--dark" type="button" data-save-settings>Зберегти зміни</button>
+            </article>
+            <article class="admin-action-card">
+              <div><h2>Повернути останні збережені</h2><p>Скасувати зміни в полях, які ще не були збережені.</p></div>
+              <button class="btn btn--light" type="button" id="revertChangesButton">Повернути останні збережені</button>
+            </article>
+            <article class="admin-action-card">
+              <div><h2>Скинути демо-дані</h2><p>Повернути початкові товари та тексти шаблону.</p></div>
+              <button class="btn btn--light" type="button" id="resetDataButton">Скинути демо-дані</button>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <div class="admin-drawer-backdrop" id="adminDrawerBackdrop" hidden></div>
+      <form class="admin-product-form" id="productForm" aria-hidden="true">
+        <div class="admin-product-form__head">
+          <h3 id="productDrawerTitle">Додати товар</h3>
+          <button type="button" id="closeProductPanelButton" aria-label="Закрити">×</button>
+        </div>
+        <div class="admin-drawer-tabs" role="tablist" aria-label="Розділи товару">
+          <button class="is-active" type="button" data-product-drawer-tab="general">Основне</button>
+          <button type="button" data-product-drawer-tab="details">Деталі</button>
+        </div>
+        <div class="admin-product-drawer-panel is-active" data-product-drawer-panel="general">
+          <div class="admin-form-grid">
+            <label>ID товару <input type="text" id="productIdInput" placeholder="new-product-id" /></label>
+            <label>Назва товару <input type="text" id="productTitleInput" required /></label>
+            <label>Категорія
+              <select id="productCategoryInput">
+                <option value="hoodies">Худі</option><option value="t-shirts">Футболки</option>
+                <option value="pants">Штани</option><option value="accessories">Аксесуари</option>
+              </select>
+            </label>
+            <label>Назва категорії <input type="text" id="productCategoryTitleInput" /></label>
+            <label>Ціна <input type="text" id="productPriceInput" placeholder="0 грн" /></label>
+            <label>Стара ціна <input type="text" id="productComparePriceInput" placeholder="0 грн" /></label>
+            <label>Кількість <input type="number" min="0" id="productStockInput" placeholder="0" /></label>
+            <label>Підпис зображення <input type="text" id="productImageLabelInput" /></label>
+            <label class="admin-field-wide">Візуальний фон <input type="text" id="productVisualInput" /></label>
+            <div class="admin-image-field admin-field-wide">
+              <span class="admin-field-label">Фото товару</span>
+              <label class="admin-upload-zone" for="productImagesInput">
+                <input type="file" id="productImagesInput" accept="image/png,image/jpeg,image/webp" multiple />
+                <strong>Завантажити фото</strong><span>PNG, JPG або WEBP до 5MB</span>
+              </label>
+              <div class="admin-image-preview" id="productImagesPreview"></div>
+              <button class="admin-clear-images" type="button" id="clearProductImagesButton">Очистити фото</button>
+            </div>
+            <label class="admin-toggle admin-field-wide">
+              <span><strong>Показувати на сайті</strong><small>Товар буде доступний покупцям</small></span>
+              <input type="checkbox" id="productVisibleInput" checked />
+            </label>
+          </div>
+        </div>
+        <div class="admin-product-drawer-panel" data-product-drawer-panel="details">
+          <div class="admin-form-grid">
+            <label class="admin-field-wide">Короткий опис <textarea rows="2" id="productShortInput"></textarea></label>
+            <label class="admin-field-wide">Повний опис <textarea rows="4" id="productDescriptionInput"></textarea></label>
+            <label class="admin-field-wide">Характеристики <textarea rows="6" id="productSpecsInput"></textarea></label>
+            <label class="admin-checkbox"><input type="checkbox" id="productPopularInput" /> Показувати в популярних</label>
+          </div>
+        </div>
+        <div class="admin-actions">
+          <button class="btn btn--light" type="button" id="cancelProductButton">Скасувати</button>
+          <button class="btn btn--dark" type="submit">Зберегти товар</button>
+          <button class="btn btn--light" type="button" id="deleteProductButton">Видалити товар</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="js/products.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/orders.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

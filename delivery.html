@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Сторінка доставки, оплати, обміну та FAQ для HTML шаблону магазину одягу UrbanWear."
+  />
+  <title>Доставка й оплата - UrbanWear</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/mobile-store.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">UrbanWear</a>
+
+      <button class="burger" type="button" aria-label="Відкрити меню">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="nav" aria-label="Головна навігація">
+        <a href="index.html">Головна</a>
+        <a href="catalog.html">Каталог</a>
+        <a href="delivery.html" aria-current="page">Доставка</a>
+        <a href="contacts.html">Контакти</a>
+      </nav>
+
+      <a href="catalog.html" class="header__btn">До каталогу</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <p class="label">Доставка й оплата</p>
+        <h1>Доставка й оплата</h1>
+        <p data-store-text="deliveryIntro">
+          Прості умови замовлення для клієнтів: швидка відправка, зручна оплата
+          та можливість обміну розміру після отримання.
+        </p>
+      </div>
+    </section>
+
+    <section class="info-section">
+      <div class="container info-grid">
+        <article class="info-card">
+          <span>01</span>
+          <h2>Доставка</h2>
+          <p data-store-text="deliveryBody">
+            Замовлення відправляються Новою поштою по всій Україні протягом
+            1-2 робочих днів після підтвердження менеджером.
+          </p>
+
+          <ul>
+            <li>Відділення Нової пошти</li>
+            <li>Поштомат Нової пошти</li>
+            <li>Адресна доставка кур'єром</li>
+          </ul>
+        </article>
+
+        <article class="info-card">
+          <span>02</span>
+          <h2>Оплата</h2>
+          <p data-store-text="paymentBody">
+            Покупець може обрати зручний спосіб оплати під час підтвердження
+            замовлення в Telegram або Viber.
+          </p>
+
+          <ul>
+            <li>Оплата на картку</li>
+            <li>Післяплата при отриманні</li>
+            <li>Повна передоплата</li>
+          </ul>
+        </article>
+
+        <article class="info-card">
+          <span>03</span>
+          <h2>Обмін і повернення</h2>
+          <p data-store-text="exchangeBody">
+            Якщо розмір не підійшов, клієнт може оформити обмін згідно з умовами
+            магазину та правилами перевізника.
+          </p>
+
+          <ul>
+            <li>Обмін розміру протягом 14 днів</li>
+            <li>Товар має бути без слідів носіння</li>
+            <li>Бірки та пакування мають бути збережені</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <div class="container">
+        <div class="section-heading">
+          <p class="label">FAQ</p>
+          <h2>Поширені питання</h2>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>Скільки часу займає доставка?</summary>
+            <p>
+              Зазвичай доставка Новою поштою займає 1-3 дні залежно від міста отримувача.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Чи можна оплатити при отриманні?</summary>
+            <p>
+              Так, магазин може дозволити післяплату після огляду товару у відділенні.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Як підібрати розмір?</summary>
+            <p>
+              Напишіть менеджеру в Telegram або Viber - він допоможе підібрати розмір
+              за параметрами клієнта.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Чи можна замінити товар?</summary>
+            <p>
+              Так, якщо товар не був у використанні, а бірки та пакування збережені.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container cta-box">
+        <div>
+          <p class="label">Need help?</p>
+          <h2>Залишились питання?</h2>
+          <p data-store-text="ctaText">
+            Напишіть нам - допоможемо з розміром, наявністю та оформленням замовлення.
+          </p>
+        </div>
+
+        <a href="contacts.html" class="btn btn--dark">Перейти до контактів</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <a href="index.html" class="logo logo--footer">UrbanWear</a>
+        <p data-store-text="footerText">Адаптивний сайт-каталог сучасного одягу.</p>
+      </div>
+
+      <div class="footer__links">
+        <a href="catalog.html">Каталог</a>
+        <a href="delivery.html">Доставка</a>
+        <a href="contacts.html">Контакти</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/products.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/favorites.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

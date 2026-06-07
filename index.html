@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="UrbanWear - адаптивний HTML/CSS/JS шаблон сайту-каталогу для магазину одягу, streetwear бренду або Instagram-магазину."
+  />
+  <title>UrbanWear - магазин сучасного одягу</title>
+  <link rel="stylesheet" href="css/style.css?v=mobile-hero-2" />
+  <link rel="stylesheet" href="css/mobile-store.css?v=mobile-hero-2" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">UrbanWear</a>
+
+      <button class="burger" type="button" aria-label="Відкрити меню">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="nav" aria-label="Головна навігація">
+        <a href="index.html" aria-current="page">Головна</a>
+        <a href="catalog.html">Каталог</a>
+        <a href="delivery.html">Доставка</a>
+        <a href="contacts.html">Контакти</a>
+      </nav>
+
+      <a href="catalog.html" class="header__btn">До каталогу</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero__inner">
+        <div class="hero__content">
+          <p class="label" data-store-text="heroKicker">Нова колекція 2026</p>
+          <h1 data-store-text="heroTitle">Мінімалістичний одяг для щоденного міського стилю</h1>
+          <p class="hero__text" data-store-text="heroText">
+            Базові худі, футболки, штани та аксесуари для тих, хто обирає комфорт,
+            чистий дизайн і впевнений streetwear без зайвого шуму.
+          </p>
+          <div class="hero__actions">
+            <a href="catalog.html" class="btn btn--dark">Дивитись каталог</a>
+            <a href="#popular" class="btn btn--light">Популярні товари</a>
+          </div>
+        </div>
+
+        <div class="hero__image" aria-label="Візуальний блок колекції UrbanWear">
+          <div class="hero__photo-placeholder">
+            <span data-store-text="heroVisualText">Дроп 01 / міська база</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="categories">
+      <div class="container">
+        <div class="section-heading">
+          <p class="label">Категорії</p>
+          <h2>Категорії товарів</h2>
+        </div>
+
+        <div class="category-grid">
+          <a href="catalog.html" class="category-card">
+            <span>01</span>
+            <h3>Худі</h3>
+            <p>Теплі oversize худі для міста</p>
+          </a>
+
+          <a href="catalog.html" class="category-card">
+            <span>02</span>
+            <h3>Футболки</h3>
+            <p>Базові футболки та лонгсліви</p>
+          </a>
+
+          <a href="catalog.html" class="category-card">
+            <span>03</span>
+            <h3>Штани</h3>
+            <p>Карго та relaxed-fit штани</p>
+          </a>
+
+          <a href="catalog.html" class="category-card">
+            <span>04</span>
+            <h3>Аксесуари</h3>
+            <p>Кепки, сумки та щоденні деталі</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="popular" id="popular">
+      <div class="container">
+        <div class="section-heading section-heading--between">
+          <div>
+            <p class="label">Популярне</p>
+            <h2>Популярні товари</h2>
+          </div>
+
+          <a href="catalog.html" class="text-link">Усі товари</a>
+        </div>
+
+        <div class="product-grid" id="popularProducts"></div>
+      </div>
+    </section>
+
+    <section class="benefits">
+      <div class="container benefits__grid">
+        <div class="benefit-card">
+          <h3>Швидка відправка</h3>
+          <p>Підтверджені замовлення відправляються Новою поштою протягом 1-2 робочих днів.</p>
+        </div>
+
+        <div class="benefit-card">
+          <h3>Обмін розміру</h3>
+          <p>Покупець може замінити розмір, якщо товар не підійшов і збережений у новому стані.</p>
+        </div>
+
+        <div class="benefit-card">
+          <h3>Оплата зручно</h3>
+          <p>Шаблон підходить для оплати на картку, післяплати або ручного оформлення в месенджері.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="about">
+      <div class="container about__inner">
+        <div>
+          <p class="label">Про бренд</p>
+          <h2 data-store-text="aboutTitle">UrbanWear - простий одяг без зайвого шуму</h2>
+        </div>
+
+        <p data-store-text="aboutText">
+          Ми створюємо базові речі для міського ритму: чисті силуети, спокійні кольори,
+          якісні тканини та комфортну посадку. Це одяг, який легко поєднувати між собою
+          щодня і швидко адаптувати під стиль конкретного бренду.
+        </p>
+      </div>
+    </section>
+
+    <section class="order-steps">
+      <div class="container">
+        <div class="section-heading">
+          <p class="label">Як замовити</p>
+          <h2>Як зробити замовлення</h2>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <span>01</span>
+            <h3>Обери товар</h3>
+            <p>Перейди в каталог і вибери модель, розмір та колір з доступних позицій.</p>
+          </div>
+
+          <div class="step-card">
+            <span>02</span>
+            <h3>Напиши менеджеру</h3>
+            <p>Натисни кнопку замовлення в Telegram або Viber, щоб уточнити наявність.</p>
+          </div>
+
+          <div class="step-card">
+            <span>03</span>
+            <h3>Отримай посилку</h3>
+            <p>Після підтвердження магазин відправить замовлення зручним способом доставки.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <a href="index.html" class="logo logo--footer">UrbanWear</a>
+        <p data-store-text="footerText">Адаптивний сайт-каталог сучасного одягу.</p>
+      </div>
+
+      <div class="footer__links">
+        <a href="catalog.html">Каталог</a>
+        <a href="delivery.html">Доставка</a>
+        <a href="contacts.html">Контакти</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/products.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/favorites.js"></script>
+  <script src="js/main.js?v=mobile-hero-2"></script>
+</body>
+</html>

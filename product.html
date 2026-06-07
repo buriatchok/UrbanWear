@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Демо-сторінка товару UrbanWear з описом, характеристиками, вибором розміру та кнопками замовлення."
+  />
+  <title>Товар - UrbanWear</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/mobile-store.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">UrbanWear</a>
+
+      <button class="burger" type="button" aria-label="Відкрити меню">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="nav" aria-label="Головна навігація">
+        <a href="index.html">Головна</a>
+        <a href="catalog.html">Каталог</a>
+        <a href="delivery.html">Доставка</a>
+        <a href="contacts.html">Контакти</a>
+      </nav>
+
+      <a href="contacts.html" class="header__btn">Замовити</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="product-page">
+      <div class="container product-page__inner">
+        <div class="product-gallery">
+          <div class="product-gallery__main" id="productVisual">
+            <span id="productImageLabel">Товар</span>
+          </div>
+
+          <div class="product-gallery__thumbs" aria-label="Мініатюри товару">
+            <div class="product-gallery__thumb">01</div>
+            <div class="product-gallery__thumb">02</div>
+            <div class="product-gallery__thumb">03</div>
+          </div>
+        </div>
+
+        <div class="product-info">
+          <p class="label" id="productCategory">Категорія</p>
+          <h1 id="productTitle">Назва товару</h1>
+
+          <p class="product-info__desc" id="productDescription">
+            Опис товару завантажується...
+          </p>
+
+          <div class="product-price" id="productPrice">0 грн</div>
+
+          <div class="product-options">
+            <h3>Розмір</h3>
+            <div class="size-list" aria-label="Вибір розміру">
+              <button type="button">S</button>
+              <button type="button" class="is-active">M</button>
+              <button type="button">L</button>
+              <button type="button">XL</button>
+            </div>
+          </div>
+
+          <div class="product-details">
+            <h3>Характеристики</h3>
+            <ul id="productSpecs">
+              <li>Характеристики завантажуються...</li>
+            </ul>
+          </div>
+
+          <div class="product-actions">
+            <a
+              href="https://t.me/yourusername"
+              target="_blank"
+              rel="noopener"
+              class="btn btn--light"
+              data-store-href="telegramUrl"
+            >
+              Замовити в Telegram
+            </a>
+
+            <a
+              href="viber://chat?number=%2B380000000000"
+              class="btn btn--light"
+              data-store-href="viberUrl"
+            >
+              Написати у Viber
+            </a>
+          </div>
+
+          <p class="product-note" data-store-text="productNote">
+            * У демо-шаблоні замініть посилання Telegram/Viber на контакти реального магазину.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="popular">
+      <div class="container">
+        <div class="section-heading section-heading--between">
+          <div>
+            <p class="label">Вам також може сподобатися</p>
+            <h2>Схожі товари</h2>
+          </div>
+
+          <a href="catalog.html" class="text-link">До каталогу</a>
+        </div>
+
+        <div class="product-grid" id="relatedProducts"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <a href="index.html" class="logo logo--footer">UrbanWear</a>
+        <p data-store-text="footerText">Адаптивний сайт-каталог сучасного одягу.</p>
+      </div>
+
+      <div class="footer__links">
+        <a href="catalog.html">Каталог</a>
+        <a href="delivery.html">Доставка</a>
+        <a href="contacts.html">Контакти</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/products.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/favorites.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Кошик UrbanWear." />
+  <title>Кошик - UrbanWear</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/mobile-store.css" />
+</head>
+<body>
+  <script>
+    window.location.replace("account.html?tab=cart");
+  </script>
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo">UrbanWear</a>
+      <button class="burger" type="button" aria-label="Відкрити меню">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="nav" aria-label="Головна навігація">
+        <a href="index.html">Головна</a>
+        <a href="catalog.html">Каталог</a>
+        <a href="delivery.html">Доставка</a>
+        <a href="contacts.html">Контакти</a>
+      </nav>
+      <a href="catalog.html" class="header__btn">До каталогу</a>
+    </div>
+  </header>
+
+  <main class="cart-page">
+    <section class="container cart-layout">
+      <div>
+        <p class="label">Кошик</p>
+        <h1>Кошик</h1>
+        <p class="cart-muted">Перевірте вибрані товари та перейдіть до оформлення замовлення.</p>
+      </div>
+
+      <div class="cart-grid">
+        <div id="cartItems" class="cart-items"></div>
+
+        <aside class="cart-summary">
+          <h2>Разом</h2>
+          <strong id="cartTotal">0 грн</strong>
+          <a href="checkout.html" class="btn btn--dark" id="checkoutButton">Оформити замовлення</a>
+          <button type="button" class="btn btn--light" id="clearCartButton">Очистити кошик</button>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/products.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.getElementById("clearCartButton").addEventListener("click", () => {
+      UrbanWearCart.clearCart();
+      UrbanWearCart.renderCartPage();
+    });
+  </script>
+</body>
+</html>

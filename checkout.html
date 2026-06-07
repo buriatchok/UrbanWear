@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Оформлення замовлення UrbanWear." />
+  <title>Оформлення замовлення - UrbanWear</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/checkout.css" />
+</head>
+<body class="checkout-page">
+  <main class="checkout-shell">
+    <header class="checkout-header">
+      <a href="cart.html" class="checkout-back">← Назад до кошика</a>
+      <h1>Оформлення замовлення</h1>
+      <ol class="checkout-steps" aria-label="Кроки оформлення">
+        <li class="is-active"><span>1</span>Доставка</li>
+        <li><span>2</span>Оплата</li>
+        <li><span>3</span>Підтвердження</li>
+      </ol>
+    </header>
+
+    <form class="checkout-layout" id="checkoutForm">
+      <section class="checkout-main">
+        <article class="checkout-card">
+          <h2><span>1</span>Контактні дані</h2>
+          <div class="checkout-fields checkout-fields--standalone">
+            <label>Ім'я <input type="text" name="firstName" required /></label>
+            <label>Прізвище <input type="text" name="lastName" required /></label>
+            <label>Номер телефону <input type="tel" name="phone" placeholder="+38 (0__) ___-__-__" required /></label>
+            <label>E-mail <input type="email" name="email" required /></label>
+          </div>
+        </article>
+
+        <article class="checkout-card">
+          <h2><span>2</span>Спосіб доставки</h2>
+          <label class="checkout-option is-selected"><input type="radio" name="delivery" value="branch" checked /><span><strong>На відділення Нової Пошти</strong><small>Орієнтовно 1–2 дні</small></span></label>
+          <label class="checkout-option"><input type="radio" name="delivery" value="postomat" /><span><strong>На поштомат Нової Пошти</strong><small>Орієнтовно 1–2 дні</small></span></label>
+          <label class="checkout-option"><input type="radio" name="delivery" value="courier" /><span><strong>Кур'єрська доставка</strong><small>Доставка за адресою</small></span></label>
+          <div class="checkout-fields checkout-fields--standalone" id="deliveryDynamicFields"></div>
+          <label class="checkout-delivery-comment">Коментар для доставки <span>(необов’язково)</span><textarea name="deliveryComment" rows="3" maxlength="150"></textarea></label>
+        </article>
+
+        <article class="checkout-card">
+          <h2><span>3</span>Спосіб оплати</h2>
+          <label class="checkout-option is-selected"><input type="radio" name="payment" value="full" checked /><span><strong>Повна оплата</strong><small>Без комісії</small></span></label>
+          <label class="checkout-option"><input type="radio" name="payment" value="cod" /><span><strong>Оплата при отриманні з передплатою 100 грн</strong><small>Комісія перевізника сплачується окремо</small></span></label>
+        </article>
+      </section>
+
+      <aside class="checkout-summary">
+        <div class="checkout-summary__head"><h2>Ваше замовлення</h2><a href="cart.html">Редагувати</a></div>
+        <div id="checkoutItems"></div>
+        <div class="checkout-total"><span>Загальна сума</span><strong id="checkoutTotal">0 грн</strong></div>
+        <div class="checkout-shipping-note"><strong id="checkoutShortfall"></strong></div>
+        <button class="checkout-submit" id="checkoutSubmitButton" type="submit">Оформити замовлення</button>
+        <p class="checkout-legal">Оформляючи замовлення, Ви погоджуєтесь з умовами користування та політикою конфіденційності.</p>
+        <p class="checkout-message" id="checkoutMessage" role="status" aria-live="polite"></p>
+      </aside>
+    </form>
+
+    <section class="checkout-success" id="checkoutSuccess" hidden>
+      <span class="checkout-success__mark">✓</span>
+      <h1>Дякуємо за замовлення!</h1>
+      <p>Ваше замовлення успішно оформлено.<br />Найближчим часом ми зв’яжемося з вами для підтвердження.</p>
+      <div class="checkout-success__number"><span>Номер замовлення</span><strong id="checkoutSuccessNumber"></strong><button type="button" id="copyOrderNumberButton" aria-label="Копіювати номер">□</button></div>
+      <div class="checkout-success__actions"><a class="btn btn--light" href="index.html">На головну</a><a class="btn btn--dark" href="catalog.html">До каталогу</a></div>
+    </section>
+    <section class="checkout-success-benefits" id="checkoutSuccessBenefits" hidden>
+      <article><strong>Швидка доставка</strong><span>По всій Україні</span></article>
+      <article><strong>Легке повернення</strong><span>14 днів на обмін</span></article>
+      <article><strong>Безпечна оплата</strong><span>Онлайн або при отриманні</span></article>
+      <article><strong>Підтримка клієнтів</strong><span>Ми завжди на зв’язку</span></article>
+    </section>
+  </main>
+
+  <script src="js/products.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/orders.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>

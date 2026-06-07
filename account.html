@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Особистий кабінет покупця UrbanWear." />
+  <title>Особистий кабінет - UrbanWear</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/account.css" />
+</head>
+<body class="customer-account-page">
+  <main class="customer-account-shell" id="accountShell" hidden>
+    <aside class="customer-account-sidebar" id="accountSidebar">
+      <a class="customer-account-brand" href="index.html"><strong>UrbanWear</strong><span>Магазин</span></a>
+
+      <section class="customer-profile-card">
+        <div class="customer-avatar" id="accountAvatar">U</div>
+        <div><strong id="accountName"></strong><span id="accountEmail"></span></div>
+        <button type="button" id="accountLogoutButton">Вийти з акаунту</button>
+      </section>
+
+      <nav class="customer-account-nav" aria-label="Розділи особистого кабінету">
+        <button class="is-active" type="button" data-account-tab="overview"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Панель керування</button>
+        <button type="button" data-account-tab="profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0z"/></svg>Мій профіль</button>
+        <button type="button" data-account-tab="orders"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M8 9h8M8 13h8M8 17h5"/></svg>Мої замовлення</button>
+        <button type="button" data-account-tab="cart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9h12l1 12H5zM9 10V7a3 3 0 0 1 6 0v3"/></svg>Кошик <strong data-cart-count>0</strong></button>
+        <button type="button" data-account-tab="favorites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg>Обране <strong data-favorites-count>0</strong></button>
+        <button type="button" data-account-tab="addresses"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="2.5"/><path d="M7 21h10"/></svg>Адреси доставки</button>
+        <button type="button" data-account-tab="payments"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Способи оплати</button>
+        <button type="button" data-account-tab="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1z"/></svg>Налаштування</button>
+      </nav>
+
+      <section class="customer-news-card">
+        <p class="label">Новини UrbanWear</p>
+        <h2>Будьте в курсі новинок</h2>
+        <p>Отримуйте повідомлення про нові колекції та спеціальні пропозиції.</p>
+        <a href="catalog.html">Переглянути каталог →</a>
+      </section>
+    </aside>
+
+    <section class="customer-account-workspace">
+      <header class="customer-account-topbar">
+        <button class="customer-account-menu" id="accountMenuButton" type="button" aria-label="Відкрити меню"><span></span><span></span><span></span></button>
+        <label class="customer-account-search"><span>Пошук товарів</span><input type="search" id="accountSearch" placeholder="Пошук товарів..." /></label>
+        <div class="customer-account-top-actions">
+          <button type="button" data-account-tab-link="favorites" aria-label="Обране">♡<strong data-favorites-count>0</strong></button>
+          <button type="button" data-account-tab-link="cart" aria-label="Кошик">▢<strong data-cart-count>0</strong></button>
+          <button type="button" data-account-tab-link="profile"><span id="accountTopName"></span><small>Мій профіль</small></button>
+        </div>
+      </header>
+
+      <div class="customer-account-content">
+        <section class="customer-account-panel is-active" data-account-panel="overview">
+          <header class="customer-panel-heading">
+            <h1>Особистий кабінет</h1>
+            <p id="accountGreeting"></p>
+          </header>
+          <div class="customer-summary-grid" id="accountSummary"></div>
+          <section class="customer-account-card">
+            <div class="customer-card-heading"><div><h2>Останні замовлення</h2><p>Статус та основна інформація про ваші покупки</p></div><button type="button" data-account-tab-link="orders">Переглянути всі замовлення</button></div>
+            <div id="recentAccountOrders"></div>
+          </section>
+        </section>
+
+        <section class="customer-account-panel" data-account-panel="profile">
+          <header class="customer-panel-heading"><h1>Мій профіль</h1><p>Редагуйте основну інформацію, яка буде автоматично підставлятися під час оформлення замовлення.</p></header>
+          <div class="customer-profile-layout">
+            <form class="customer-account-card customer-profile-form" id="accountProfileForm">
+              <div class="customer-profile-note"><strong>i</strong><span>Ці дані рекомендуються та автоматично підставляються при оформленні замовлення.</span></div>
+              <div class="customer-profile-fields">
+                <label>Ім’я <input type="text" name="firstName" autocomplete="given-name" /></label>
+                <label>Прізвище <input type="text" name="lastName" autocomplete="family-name" /></label>
+                <label>E-mail <input type="email" name="email" autocomplete="email" /></label>
+                <label>Номер телефону <input type="tel" name="phone" autocomplete="tel" /></label>
+                <label>Місто <input type="text" name="city" autocomplete="address-level2" /></label>
+                <label>Адреса доставки <input type="text" name="address" autocomplete="street-address" /></label>
+                <label class="customer-profile-wide">Коментар для доставки <span>(необов’язково)</span><textarea name="deliveryComment" rows="3" maxlength="150"></textarea></label>
+              </div>
+              <label class="customer-profile-default"><input type="checkbox" name="useAsDefault" /><span><strong>Використовувати ці дані за замовчуванням при замовленні</strong><small>Інформація буде автоматично підставлятися у форму оформлення замовлення.</small></span></label>
+              <div class="customer-profile-actions"><button class="btn btn--light" id="cancelProfileChanges" type="button">Скасувати зміни</button><button class="btn customer-profile-save" type="submit">Зберегти зміни</button></div>
+              <p class="customer-profile-message" id="profileSaveMessage" role="status" aria-live="polite"></p>
+            </form>
+            <aside class="customer-profile-side">
+              <section class="customer-account-card customer-profile-side-card"><h2>Контактні дані</h2><div id="profileContactSummary"></div></section>
+              <section class="customer-account-card customer-profile-side-card">
+                <h2>Параметри для швидкого оформлення</h2>
+                <label class="customer-profile-switch"><span>Автоматично заповнювати особисті дані</span><input type="checkbox" form="accountProfileForm" name="autofillPersonalData" /></label>
+                <label class="customer-profile-switch"><span>Вибрана адреса доставки за замовчуванням</span><input type="checkbox" form="accountProfileForm" name="defaultAddressEnabled" /></label>
+                <label class="customer-profile-switch"><span>Використовувати основний спосіб оплати</span><input type="checkbox" form="accountProfileForm" name="defaultPaymentEnabled" /></label>
+                <p>Ці налаштування допоможуть оформлювати замовлення швидше та зручніше.</p>
+              </section>
+            </aside>
+          </div>
+        </section>
+
+        <section class="customer-account-panel" data-account-panel="orders">
+          <header class="customer-panel-heading"><h1>Мої замовлення</h1><p>Переглядайте свої замовлення та керуйте покупками</p></header>
+          <section class="customer-account-card">
+            <div class="customer-card-heading"><div><h2>Активні замовлення</h2><p>Історія покупок та поточні статуси</p></div></div>
+            <div id="accountOrders"></div>
+          </section>
+          <p class="customer-account-help">Потрібна допомога? <a href="contacts.html">Зв’яжіться з нами</a></p>
+        </section>
+
+        <section class="customer-account-panel" data-account-panel="cart">
+          <header class="customer-panel-heading"><h1>Кошик</h1><p>Переглядайте товари, змінюйте параметри та оформлюйте замовлення.</p></header>
+          <section class="customer-account-card customer-cart-card"><div id="accountCart"></div></section>
+          <section class="customer-benefits-row"><div><strong>Безкоштовна доставка від 1500 грн</strong><span>По всій Україні</span></div><div><strong>Легке повернення 14 днів</strong><span>Без зайвих питань</span></div><div><strong>Безпечна оплата</strong><span>Ваші платежі захищені</span></div></section>
+        </section>
+
+        <section class="customer-account-panel" data-account-panel="favorites">
+          <header class="customer-panel-heading customer-panel-heading--actions"><div><h1>Обране</h1><p>Ваші улюблені товари. Зберігайте те, до чого хочеться повернутися.</p></div><button type="button" id="clearFavoritesButton">Очистити список</button></header>
+          <section class="customer-account-card customer-favorites-card"><div id="accountFavorites"></div></section>
+          <section class="customer-favorites-tip"><strong>Зберігайте улюблені товари</strong><span>Додавайте товари в обране, щоб швидко знаходити їх та повертатися до покупок пізніше.</span><a class="btn" href="catalog.html">Перейти до каталогу</a></section>
+        </section>
+        <section class="customer-account-panel" data-account-panel="addresses"><div class="customer-placeholder"><strong>Адреси доставки</strong><p>Адреси з ваших замовлень з’являтимуться тут.</p></div></section>
+        <section class="customer-account-panel" data-account-panel="payments"><div class="customer-placeholder"><strong>Способи оплати</strong><p>У статичній демо-версії платіжні дані не зберігаються.</p></div></section>
+        <section class="customer-account-panel" data-account-panel="settings"><div class="customer-placeholder"><strong>Налаштування</strong><p>Використовуйте кнопку виходу, щоб завершити поточну сесію.</p><button class="btn btn--dark" type="button" id="accountLogoutSettingsButton">Вийти з акаунту</button></div></section>
+      </div>
+    </section>
+
+    <div class="customer-order-backdrop" id="accountOrderBackdrop" hidden></div>
+    <aside class="customer-order-drawer" id="accountOrderDrawer" aria-hidden="true">
+      <div class="customer-order-drawer__head"><div><p class="label">Деталі замовлення</p><h2 id="drawerOrderNumber"></h2></div><button id="closeOrderDrawer" type="button" aria-label="Закрити">×</button></div>
+      <div id="accountOrderDetails"></div>
+      <div class="customer-order-drawer__actions"><button class="btn btn--light" id="closeOrderDrawerBottom" type="button">Закрити</button><button class="btn btn--dark" id="repeatOrderButton" type="button" hidden>Повторити замовлення</button></div>
+    </aside>
+  </main>
+
+  <script src="js/products.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/favorites.js"></script>
+  <script src="js/orders.js"></script>
+  <script src="js/account.js"></script>
+</body>
+</html>

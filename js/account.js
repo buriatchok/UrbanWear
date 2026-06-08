@@ -137,8 +137,9 @@ function renderSummary() {
   const processing = orders.filter((order) => ["New", "Processing"].includes(order.status)).length;
   const completed = orders.filter((order) => order.status === "Completed").length;
   const active = orders.filter((order) => !["Completed", "Cancelled"].includes(order.status)).length;
+  const bagIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9h12l1 12H5zM9 10V7a3 3 0 0 1 6 0v3"/></svg>';
   document.getElementById("accountSummary").innerHTML = [
-    ["□", "Активні замовлення", active],
+    [bagIcon, "Активні замовлення", active],
     ["◷", "В обробці", processing],
     ["✓", "Завершені замовлення", completed],
   ].map(([icon, title, value]) => `<article class="customer-summary-card"><span class="customer-summary-card__icon">${icon}</span><div><span>${title}</span><strong>${value}</strong><small>Переглянути замовлення</small></div><button type="button" data-account-tab-link="orders">→</button></article>`).join("");

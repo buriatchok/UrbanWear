@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Вхід для покупців та адміністраторів UrbanWear." />
-  <title>Вхід - UrbanWear</title>
+  <meta name="description" content="Увійдіть або створіть акаунт UrbanWear, щоб керувати замовленнями, кошиком та обраними товарами." />
+  <title>Вхід і реєстрація — UrbanWear</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/mobile-store.css" />
 </head>
@@ -31,10 +31,9 @@
     <section class="container auth-layout">
       <div class="auth-copy">
         <p class="label">Акаунт</p>
-        <h1>Вхід у магазин</h1>
+        <h1>Ласкаво просимо!</h1>
         <p>
-          Введіть email і пароль. Якщо це дані адміністратора, відкриється панель керування.
-          Якщо це покупець, відкриється кабінет покупця.
+          Увійдіть у свій акаунт, щоб продовжити покупки та перегляд замовлень.
         </p>
       </div>
 
@@ -51,13 +50,13 @@
             <button type="button" data-social-login="Instagram">Instagram</button>
           </div>
 
-          <p class="auth-note">Соцлогін у статичній версії працює як демо без реального OAuth.</p>
+          <p class="auth-note">Швидкий вхід через соціальний акаунт.</p>
         </form>
 
         <form class="auth-card" id="registerForm">
           <h2>Реєстрація</h2>
-          <label>Ім'я <input type="text" name="name" placeholder="Ваше ім'я" required /></label>
-          <label>Електронна пошта <input type="email" name="email" placeholder="you@example.com" required /></label>
+          <label>Ім'я <input type="text" name="name" placeholder="Введіть ім’я" required /></label>
+          <label>Електронна пошта <input type="email" name="email" placeholder="example@email.com" required /></label>
           <label>Пароль <input type="password" name="password" placeholder="Мінімум 4 символи" required /></label>
           <button type="submit" class="btn btn--light">Створити акаунт</button>
         </form>
@@ -67,12 +66,12 @@
     </section>
   </main>
 
-  <script src="js/products.js"></script>
+  <script src="js/products.js?v=categories-1"></script>
   <script src="js/auth.js"></script>
   <script src="js/analytics.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/favorites.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=categories-1"></script>
   <script>
     const authMessage = document.getElementById("authMessage");
 

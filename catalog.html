@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
-    content="Каталог UrbanWear з фільтрами категорій: худі, футболки, штани та аксесуари для демо-магазину одягу."
+    content="Перегляньте каталог UrbanWear: сучасний streetwear, базові худі, футболки, штани та аксесуари з доставкою по Україні."
   />
-  <title>Каталог - UrbanWear</title>
+  <title>Каталог UrbanWear — худі, футболки, штани та аксесуари</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/mobile-store.css" />
 </head>
@@ -37,23 +37,16 @@
     <section class="page-hero">
       <div class="container">
         <p class="label">Каталог</p>
-        <h1>Каталог товарів</h1>
+        <h1>Каталог UrbanWear</h1>
         <p>
-          Базові речі для щоденного міського стилю: худі, футболки, штани та аксесуари.
-          Фільтри працюють без бекенду, тому шаблон легко адаптувати під невеликий магазин.
+          Збирайте зручні міські образи з базових худі, футболок, штанів та аксесуарів UrbanWear.
         </p>
       </div>
     </section>
 
     <section class="catalog-section">
       <div class="container">
-        <div class="catalog-filter" aria-label="Фільтр категорій">
-          <button class="filter-btn active" type="button" data-filter="all" aria-pressed="true">Усі</button>
-          <button class="filter-btn" type="button" data-filter="hoodies" aria-pressed="false">Худі</button>
-          <button class="filter-btn" type="button" data-filter="t-shirts" aria-pressed="false">Футболки</button>
-          <button class="filter-btn" type="button" data-filter="pants" aria-pressed="false">Штани</button>
-          <button class="filter-btn" type="button" data-filter="accessories" aria-pressed="false">Аксесуари</button>
-        </div>
+        <div class="catalog-filter" id="catalogCategoryFilter" aria-label="Фільтр категорій"></div>
 
         <div class="product-grid product-grid--catalog" id="catalogProducts"></div>
       </div>
@@ -75,11 +68,11 @@
     </div>
   </footer>
 
-  <script src="js/products.js"></script>
+  <script src="js/products.js?v=categories-1"></script>
   <script src="js/auth.js"></script>
   <script src="js/analytics.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/favorites.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=categories-1"></script>
 </body>
 </html>

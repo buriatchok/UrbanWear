@@ -59,6 +59,15 @@
 .customer-account-top-actions { justify-self: end; display: flex; align-items: center; gap: 12px; }
 .customer-account-top-actions a, .customer-account-top-actions button { border: 0; background: transparent; color: #111; text-decoration: none; cursor: pointer; }
 .customer-account-top-actions > a, .customer-account-top-actions > button:not(:last-child) { width: 36px; height: 36px; border: 1px solid var(--account-border); border-radius: 50%; display: grid; place-items: center; position: relative; padding: 0; font-size: 19px; }
+.customer-account-top-actions > button:not(:last-child) svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.65;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .customer-account-top-actions > a strong, .customer-account-top-actions > button:not(:last-child) strong { min-width: 15px; height: 15px; border-radius: 50%; background: #111; color: #fff; position: absolute; top: -4px; right: -4px; display: grid; place-items: center; font-size: 8px; }
 .customer-account-top-actions > button:last-child { border-left: 1px solid var(--account-border); padding-left: 16px; text-align: left; font: inherit; }
 .customer-account-top-actions button span, .customer-account-top-actions button small { display: block; }
@@ -80,6 +89,15 @@
 }
 .customer-summary-card { min-height: 124px; padding: 20px; display: grid; grid-template-columns: 46px minmax(0,1fr) auto; align-items: center; gap: 14px; }
 .customer-summary-card__icon { width: 46px; height: 46px; border: 1px solid var(--account-border); border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 20px; }
+.customer-summary-card__icon svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.65;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .customer-summary-card span, .customer-summary-card strong, .customer-summary-card small { display: block; }
 .customer-summary-card span { font-size: 12px; font-weight: 700; }
 .customer-summary-card strong { margin-top: 6px; font-size: 24px; }

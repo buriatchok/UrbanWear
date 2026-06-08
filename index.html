@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
-    content="UrbanWear - адаптивний HTML/CSS/JS шаблон сайту-каталогу для магазину одягу, streetwear бренду або Instagram-магазину."
+    content="UrbanWear — інтернет-магазин сучасного streetwear-одягу. Худі, футболки, штани та аксесуари для щоденних міських образів із доставкою по Україні."
   />
-  <title>UrbanWear - магазин сучасного одягу</title>
+  <title>UrbanWear — сучасний streetwear та базовий одяг для міста</title>
   <link rel="stylesheet" href="css/style.css?v=mobile-nav-3" />
   <link rel="stylesheet" href="css/mobile-store.css?v=mobile-nav-3" />
 </head>
@@ -61,34 +61,10 @@
       <div class="container">
         <div class="section-heading">
           <p class="label">Категорії</p>
-          <h2>Категорії товарів</h2>
+          <h2>Популярні категорії</h2>
         </div>
 
-        <div class="category-grid">
-          <a href="catalog.html" class="category-card">
-            <span>01</span>
-            <h3>Худі</h3>
-            <p>Теплі oversize худі для міста</p>
-          </a>
-
-          <a href="catalog.html" class="category-card">
-            <span>02</span>
-            <h3>Футболки</h3>
-            <p>Базові футболки та лонгсліви</p>
-          </a>
-
-          <a href="catalog.html" class="category-card">
-            <span>03</span>
-            <h3>Штани</h3>
-            <p>Карго та relaxed-fit штани</p>
-          </a>
-
-          <a href="catalog.html" class="category-card">
-            <span>04</span>
-            <h3>Аксесуари</h3>
-            <p>Кепки, сумки та щоденні деталі</p>
-          </a>
-        </div>
+        <div class="category-grid" id="storeCategoryGrid"></div>
       </div>
     </section>
 
@@ -110,18 +86,18 @@
     <section class="benefits">
       <div class="container benefits__grid">
         <div class="benefit-card">
-          <h3>Швидка відправка</h3>
-          <p>Підтверджені замовлення відправляються Новою поштою протягом 1-2 робочих днів.</p>
+          <h3>Доставка по Україні</h3>
+          <p>Надсилаємо замовлення Новою поштою у відділення, поштомат або кур’єром.</p>
         </div>
 
         <div class="benefit-card">
-          <h3>Обмін розміру</h3>
-          <p>Покупець може замінити розмір, якщо товар не підійшов і збережений у новому стані.</p>
+          <h3>Легкий обмін</h3>
+          <p>Обмінюйте або повертайте товар протягом 14 днів зі збереженими бірками.</p>
         </div>
 
         <div class="benefit-card">
-          <h3>Оплата зручно</h3>
-          <p>Шаблон підходить для оплати на картку, післяплати або ручного оформлення в месенджері.</p>
+          <h3>Безпечна оплата</h3>
+          <p>Оплачуйте карткою онлайн або при отриманні замовлення.</p>
         </div>
       </div>
     </section>
@@ -130,7 +106,7 @@
       <div class="container about__inner">
         <div>
           <p class="label">Про бренд</p>
-          <h2 data-store-text="aboutTitle">UrbanWear - простий одяг без зайвого шуму</h2>
+          <h2 data-store-text="aboutTitle">UrbanWear — одяг без зайвого шуму</h2>
         </div>
 
         <p data-store-text="aboutText">
@@ -157,8 +133,8 @@
 
           <div class="step-card">
             <span>02</span>
-            <h3>Напиши менеджеру</h3>
-            <p>Натисни кнопку замовлення в Telegram або Viber, щоб уточнити наявність.</p>
+            <h3>Оформи замовлення</h3>
+            <p>Додай речі в кошик, обери доставку й заповни контактні дані.</p>
           </div>
 
           <div class="step-card">
@@ -186,11 +162,11 @@
     </div>
   </footer>
 
-  <script src="js/products.js"></script>
+  <script src="js/products.js?v=categories-1"></script>
   <script src="js/auth.js"></script>
   <script src="js/analytics.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/favorites.js"></script>
-  <script src="js/main.js?v=mobile-nav-3"></script>
+  <script src="js/main.js?v=categories-1"></script>
 </body>
 </html>

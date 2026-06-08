@@ -1,6 +1,7 @@
 const activeStoreData =
   typeof storeData !== "undefined" ? storeData : { settings: {}, products: {} };
 const storeSettings = activeStoreData.settings || {};
+const activeCategories = activeStoreData.categories || {};
 const activeProducts =
   typeof products !== "undefined" ? products : activeStoreData.products || {};
 const publicProducts = Object.fromEntries(
@@ -220,6 +221,40 @@ function createProductCard(productId, product) {
   `;
 }
 
+function renderStoreCategories() {
+  const categoryEntries = Object.entries(activeCategories);
+  const catalogFilter = document.getElementById("catalogCategoryFilter");
+  const categoryGrid = document.getElementById("storeCategoryGrid");
+
+  if (catalogFilter) {
+    catalogFilter.innerHTML = `
+      <button class="filter-btn active" type="button" data-filter="all" aria-pressed="true">Усі</button>
+      ${categoryEntries
+        .map(
+          ([slug, category]) =>
+            `<button class="filter-btn" type="button" data-filter="${escapeAttribute(slug)}" aria-pressed="false">${escapeHtml(category.title)}</button>`
+        )
+        .join("")}
+    `;
+  }
+
+  if (categoryGrid) {
+    categoryGrid.innerHTML = categoryEntries
+      .map(
+        ([slug, category], index) => `
+          <a href="catalog.html?category=${encodeURIComponent(slug)}" class="category-card">
+            <span>${String(index + 1).padStart(2, "0")}</span>
+            <h3>${escapeHtml(category.title)}</h3>
+            <p>${escapeHtml(category.description || "Перегляньте товари цієї категорії.")}</p>
+          </a>
+        `
+      )
+      .join("");
+  }
+}
+
+renderStoreCategories();
+
 const catalogProductsContainer = document.getElementById("catalogProducts");
 
 if (catalogProductsContainer) {
@@ -247,26 +282,36 @@ function getCatalogProducts() {
 }
 
 if (filterButtons.length > 0) {
+  const requestedCategory = new URLSearchParams(window.location.search).get("category");
+
+  function applyCategoryFilter(selectedFilter, selectedButton) {
+    const catalogProducts = getCatalogProducts();
+
+    filterButtons.forEach((btn) => {
+      const isActive = btn === selectedButton;
+
+      btn.classList.toggle("active", isActive);
+      btn.setAttribute("aria-pressed", String(isActive));
+    });
+
+    catalogProducts.forEach((product) => {
+      const productCategory = product.dataset.category;
+      const isVisible = selectedFilter === "all" || selectedFilter === productCategory;
+
+      product.hidden = !isVisible;
+    });
+  }
+
   filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      const selectedFilter = button.dataset.filter;
-      const catalogProducts = getCatalogProducts();
-
-      filterButtons.forEach((btn) => {
-        const isActive = btn === button;
-
-        btn.classList.toggle("active", isActive);
-        btn.setAttribute("aria-pressed", String(isActive));
-      });
-
-      catalogProducts.forEach((product) => {
-        const productCategory = product.dataset.category;
-        const isVisible = selectedFilter === "all" || selectedFilter === productCategory;
-
-        product.hidden = !isVisible;
-      });
+      applyCategoryFilter(button.dataset.filter, button);
     });
   });
+
+  const requestedButton = Array.from(filterButtons).find(
+    (button) => button.dataset.filter === requestedCategory
+  );
+  if (requestedButton) applyCategoryFilter(requestedCategory, requestedButton);
 }
 
 const params = new URLSearchParams(window.location.search);
@@ -341,7 +386,14 @@ if (productEntries.length > 0 && document.getElementById("productTitle")) {
     });
   }
 
-  document.title = `${product.title} - ${storeSettings.brandName || "UrbanWear"}`;
+  document.title = `${product.title} — купити в ${storeSettings.brandName || "UrbanWear"}`;
+  const metaDescription = document.querySelector('meta[name="description"]');
+  if (metaDescription) {
+    metaDescription.setAttribute(
+      "content",
+      `${product.title} від UrbanWear. ${product.shortDescription}. Актуальні розміри та доставка по Україні.`
+    );
+  }
 
   const relatedProductsContainer = document.getElementById("relatedProducts");
 
@@ -408,6 +460,6 @@ if (contactForm && formMessage) {
     event.preventDefault();
     contactForm.reset();
     formMessage.textContent =
-      storeSettings.formSuccessMessage || "Дякуємо! Заявку прийнято в демо-режимі.";
+      storeSettings.formSuccessMessage || "Повідомлення надіслано. Дякуємо за звернення.";
   });
 }

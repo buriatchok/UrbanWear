@@ -12,7 +12,7 @@ const defaultUsers = [
   },
   {
     id: "customer-default",
-    name: "Customer",
+    name: "Покупець UrbanWear",
     email: "customer@urbanwear.local",
     password: "customer123",
     role: "customer",
@@ -102,7 +102,7 @@ function socialLogin(provider) {
   if (!user) {
     user = {
       id: `${normalizedProvider}-${Date.now()}`,
-      name: `${provider} Customer`,
+      name: `Покупець ${provider}`,
       email,
       password: "",
       role: "customer",

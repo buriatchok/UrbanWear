@@ -1,6 +1,7 @@
 let editableStoreData = cloneStoreData(storeData);
 let activeProductId = Object.keys(editableStoreData.products)[0] || "";
 let activeProductImages = [];
+let activeCategorySlug = "";
 
 const $ = (id) => document.getElementById(id);
 const adminLoginGate = $("adminLoginGate");
@@ -36,13 +37,24 @@ const productPopularInput = $("productPopularInput");
 const adminSearchInput = $("adminSearchInput");
 const adminCategoryFilter = $("adminCategoryFilter");
 const adminOrderBadge = $("adminOrderBadge");
+const categoryForm = $("categoryForm");
+const categoryFormTitle = $("categoryFormTitle");
+const categoryTitleInput = $("categoryTitleInput");
+const categorySlugInput = $("categorySlugInput");
+const categoryDescriptionInput = $("categoryDescriptionInput");
 
-const categoryTitles = {
-  hoodies: "Худі",
-  "t-shirts": "Футболки",
-  pants: "Штани",
-  accessories: "Аксесуари",
-};
+let categoryTitles = {};
+
+function refreshCategoryTitles() {
+  categoryTitles = Object.fromEntries(
+    Object.entries(editableStoreData.categories || {}).map(([slug, category]) => [
+      slug,
+      category.title || slug,
+    ])
+  );
+}
+
+refreshCategoryTitles();
 
 const sectionCopy = {
   dashboard: ["Панель", "Ключові показники та стан магазину"],
@@ -53,7 +65,7 @@ const sectionCopy = {
   analytics: ["Аналітика", "Відвідування сторінок, переходи та активність товарів"],
   marketing: ["Маркетинг", "Промо-тексти та повідомлення для покупців"],
   content: ["Контент", "Редагування текстів сайту, контактів і доставки"],
-  settings: ["Налаштування", "Збереження, повернення та скидання демо-даних"],
+  settings: ["Налаштування", "Збереження змін і керування даними магазину"],
 };
 
 const orderStatusLabels = {
@@ -110,6 +122,7 @@ function showLogin() {
 
 function persistStoreData(message) {
   editableStoreData = saveStoreData(editableStoreData);
+  refreshCategoryTitles();
   renderAllAdminData();
   setStatus(message);
 }
@@ -128,18 +141,29 @@ function saveSettingsFields() {
 }
 
 function slugify(value) {
+  const transliteration = {
+    а: "a", б: "b", в: "v", г: "h", ґ: "g", д: "d", е: "e", є: "ye", ж: "zh",
+    з: "z", и: "y", і: "i", ї: "yi", й: "y", к: "k", л: "l", м: "m", н: "n",
+    о: "o", п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f", х: "kh", ц: "ts",
+    ч: "ch", ш: "sh", щ: "shch", ь: "", ю: "yu", я: "ya",
+  };
+
   return String(value || "")
     .trim()
     .toLowerCase()
+    .split("")
+    .map((letter) => transliteration[letter] ?? letter)
+    .join("")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
 function createEmptyProduct() {
+  const firstCategory = Object.keys(editableStoreData.categories || {})[0] || "uncategorized";
   return {
     title: "",
-    category: "hoodies",
-    categoryTitle: "Худі",
+    category: firstCategory,
+    categoryTitle: categoryTitles[firstCategory] || "Без категорії",
     imageLabel: "Товар",
     price: "0 грн",
     comparePrice: "",
@@ -272,6 +296,7 @@ function closeProductDrawer() {
 
 function fillProductForm(productId) {
   const product = normalizeProduct(editableStoreData.products[productId]);
+  renderCategoryOptions(product.category);
   productIdInput.value = productId || "";
   productTitleInput.value = product.title;
   productCategoryInput.value = product.category;
@@ -553,19 +578,131 @@ function renderOrders() {
 }
 
 function renderCategories() {
+  const categoryEntries = Object.entries(editableStoreData.categories || {});
+
+  if (!categoryEntries.length) {
+    $("adminCategoriesList").innerHTML = '<div class="admin-empty"><div><strong>Категорій поки немає</strong><br>Створіть першу категорію для товарів магазину.</div></div>';
+    return;
+  }
+
   $("adminCategoriesList").innerHTML = `<table class="admin-table">
-    <thead><tr><th>Категорія</th><th>Slug</th><th>Товарів</th><th>Дія</th></tr></thead>
-    <tbody>${Object.entries(categoryTitles).map(([slug, title]) => {
+    <thead><tr><th>Категорія</th><th>Slug</th><th>Опис</th><th>Товарів</th><th>Дії</th></tr></thead>
+    <tbody>${categoryEntries.map(([slug, category]) => {
       const count = Object.values(editableStoreData.products).filter((product) => normalizeProduct(product).category === slug).length;
-      return `<tr><td><strong>${title}</strong></td><td>${slug}</td><td>${count}</td><td><button class="admin-table-link" type="button" data-category-products="${slug}">Переглянути товари</button></td></tr>`;
+      return `<tr>
+        <td><strong>${escapeAdminHtml(category.title)}</strong></td>
+        <td>${escapeAdminHtml(slug)}</td>
+        <td>${escapeAdminHtml(category.description || "Опис не додано")}</td>
+        <td>${count}</td>
+        <td><div class="admin-row-actions">
+          <button type="button" data-category-products="${escapeAdminAttribute(slug)}">Товари</button>
+          <button type="button" data-edit-category="${escapeAdminAttribute(slug)}">Редагувати</button>
+          <button type="button" data-delete-category="${escapeAdminAttribute(slug)}">Видалити</button>
+        </div></td>
+      </tr>`;
     }).join("")}</tbody>
   </table>`;
-  document.querySelectorAll("[data-category-products]").forEach((button) => {
+  $("adminCategoriesList").querySelectorAll("[data-category-products]").forEach((button) => {
     button.addEventListener("click", () => {
       adminCategoryFilter.value = button.dataset.categoryProducts;
       activateTab("products");
     });
   });
+  $("adminCategoriesList").querySelectorAll("[data-edit-category]").forEach((button) => {
+    button.addEventListener("click", () => fillCategoryForm(button.dataset.editCategory));
+  });
+  $("adminCategoriesList").querySelectorAll("[data-delete-category]").forEach((button) => {
+    button.addEventListener("click", () => deleteCategory(button.dataset.deleteCategory));
+  });
+}
+
+function renderCategoryOptions(selectedProductCategory = "") {
+  const entries = Object.entries(editableStoreData.categories || {});
+  const selectedFilter = adminCategoryFilter.value || "all";
+  const selectedProduct = selectedProductCategory || productCategoryInput.value;
+
+  adminCategoryFilter.innerHTML = `<option value="all">Усі категорії</option>${entries
+    .map(([slug, category]) => `<option value="${escapeAdminAttribute(slug)}">${escapeAdminHtml(category.title)}</option>`)
+    .join("")}`;
+  productCategoryInput.innerHTML = entries
+    .map(([slug, category]) => `<option value="${escapeAdminAttribute(slug)}">${escapeAdminHtml(category.title)}</option>`)
+    .join("");
+
+  if (selectedFilter === "all" || editableStoreData.categories[selectedFilter]) {
+    adminCategoryFilter.value = selectedFilter;
+  }
+  if (editableStoreData.categories[selectedProduct]) {
+    productCategoryInput.value = selectedProduct;
+  }
+}
+
+function clearCategoryForm() {
+  activeCategorySlug = "";
+  categoryFormTitle.textContent = "Нова категорія";
+  categoryForm.reset();
+  categorySlugInput.readOnly = false;
+}
+
+function fillCategoryForm(slug) {
+  const category = editableStoreData.categories[slug];
+  if (!category) return;
+  activeCategorySlug = slug;
+  categoryFormTitle.textContent = "Редагувати категорію";
+  categoryTitleInput.value = category.title || "";
+  categorySlugInput.value = slug;
+  categorySlugInput.readOnly = false;
+  categoryDescriptionInput.value = category.description || "";
+  categoryTitleInput.focus();
+}
+
+function saveCategory(event) {
+  event.preventDefault();
+  const wasEditing = Boolean(activeCategorySlug);
+  const title = categoryTitleInput.value.trim();
+  const slug = slugify(categorySlugInput.value) || slugify(title);
+  const description = categoryDescriptionInput.value.trim();
+
+  if (!title || !slug) {
+    setStatus("Додайте назву та slug категорії");
+    return;
+  }
+  if (slug !== activeCategorySlug && editableStoreData.categories[slug]) {
+    setStatus("Категорія з таким slug вже існує");
+    return;
+  }
+
+  if (activeCategorySlug && activeCategorySlug !== slug) {
+    Object.values(editableStoreData.products).forEach((product) => {
+      if (product.category === activeCategorySlug) {
+        product.category = slug;
+        product.categoryTitle = title;
+      }
+    });
+    delete editableStoreData.categories[activeCategorySlug];
+  } else if (activeCategorySlug) {
+    Object.values(editableStoreData.products).forEach((product) => {
+      if (product.category === activeCategorySlug) product.categoryTitle = title;
+    });
+  }
+
+  editableStoreData.categories[slug] = { title, description };
+  activeCategorySlug = slug;
+  persistStoreData(wasEditing ? "Категорію збережено" : "Категорію створено");
+  clearCategoryForm();
+}
+
+function deleteCategory(slug) {
+  const count = Object.values(editableStoreData.products).filter(
+    (product) => normalizeProduct(product).category === slug
+  ).length;
+  if (count > 0) {
+    setStatus(`Спочатку перемістіть ${count} товарів з цієї категорії`);
+    return;
+  }
+  if (!window.confirm("Видалити цю категорію?")) return;
+  delete editableStoreData.categories[slug];
+  clearCategoryForm();
+  persistStoreData("Категорію видалено");
 }
 
 function getCustomerSourceLabel(source) {
@@ -594,6 +731,7 @@ function renderCustomers() {
 }
 
 function renderAllAdminData() {
+  renderCategoryOptions();
   renderAnalytics();
   renderProductList();
   renderOrders();
@@ -639,16 +777,18 @@ $("adminLogoutButton").addEventListener("click", () => { window.UrbanWearAuth.lo
 document.querySelectorAll("[data-save-settings]").forEach((button) => button.addEventListener("click", saveSettingsFields));
 $("revertChangesButton").addEventListener("click", () => {
   editableStoreData = getStoreData();
+  refreshCategoryTitles();
   fillSettingsFields();
   renderAllAdminData();
   setStatus("Повернуто останні збережені дані");
 });
 $("resetDataButton").addEventListener("click", () => {
-  if (!window.confirm("Скинути всі зміни до демо-даних?")) return;
+  if (!window.confirm("Відновити початкові дані магазину?")) return;
   editableStoreData = resetStoreData();
+  refreshCategoryTitles();
   fillSettingsFields();
   renderAllAdminData();
-  setStatus("Демо-дані відновлено");
+  setStatus("Початкові дані відновлено");
 });
 $("refreshOrdersButton").addEventListener("click", () => { renderAllAdminData(); setStatus("Замовлення оновлено"); });
 $("resetAnalyticsButton").addEventListener("click", () => {
@@ -659,8 +799,23 @@ $("resetAnalyticsButton").addEventListener("click", () => {
 });
 
 productCategoryInput.addEventListener("change", () => { productCategoryTitleInput.value = categoryTitles[productCategoryInput.value]; });
+categoryTitleInput.addEventListener("input", () => {
+  if (!activeCategorySlug || !categorySlugInput.value.trim()) {
+    categorySlugInput.value = slugify(categoryTitleInput.value);
+  }
+});
+categoryForm.addEventListener("submit", saveCategory);
+$("cancelCategoryButton").addEventListener("click", clearCategoryForm);
 productForm.addEventListener("submit", saveProduct);
-$("newProductButton").addEventListener("click", () => { openProductDrawer(""); setStatus("Заповніть дані нового товару"); });
+$("newProductButton").addEventListener("click", () => {
+  if (!Object.keys(editableStoreData.categories || {}).length) {
+    activateTab("categories");
+    setStatus("Спочатку створіть категорію для товару");
+    return;
+  }
+  openProductDrawer("");
+  setStatus("Заповніть дані нового товару");
+});
 $("closeProductPanelButton").addEventListener("click", closeProductDrawer);
 $("cancelProductButton").addEventListener("click", closeProductDrawer);
 adminDrawerBackdrop.addEventListener("click", closeProductDrawer);

@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Адмін-панель UrbanWear для керування магазином." />
-  <title>Адмін-панель - UrbanWear</title>
+  <meta name="description" content="Панель керування магазином UrbanWear: товари, замовлення, покупці та аналітика." />
+  <title>Панель керування — UrbanWear</title>
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/admin-dashboard.css" />
+  <link rel="stylesheet" href="css/admin-dashboard.css?v=categories-1" />
 </head>
 <body class="admin-page">
   <section class="admin-login" id="adminLoginGate">
     <form class="auth-card auth-card--admin" id="adminGateForm">
       <p class="label">Панель керування</p>
       <h1>Вхід адміністратора</h1>
-      <p class="auth-note">Демо-доступ: admin@urbanwear.local / admin123</p>
+      <p class="auth-note">Використайте дані адміністратора для входу в панель керування.</p>
       <label>Email <input type="email" name="email" value="admin@urbanwear.local" required /></label>
       <label>Пароль <input type="password" name="password" value="admin123" required /></label>
       <button class="btn btn--dark" type="submit">Увійти</button>
@@ -26,7 +26,7 @@
     <aside class="admin-sidebar" id="adminSidebar">
       <div class="admin-sidebar__brand">
         <a href="index.html" class="logo">UrbanWear</a>
-        <p>Admin</p>
+        <p>Адміністратор</p>
       </div>
 
       <nav class="admin-tabs" aria-label="Розділи адмін-панелі">
@@ -134,6 +134,27 @@
         </section>
 
         <section class="admin-panel" data-admin-panel="categories">
+          <form class="admin-category-editor" id="categoryForm">
+            <div>
+              <h2 id="categoryFormTitle">Нова категорія</h2>
+              <p>Категорії автоматично з’являються у каталозі та на головній сторінці магазину.</p>
+            </div>
+            <div class="admin-category-fields">
+              <label>Назва категорії
+                <input type="text" id="categoryTitleInput" placeholder="Наприклад, Куртки" required />
+              </label>
+              <label>Slug
+                <input type="text" id="categorySlugInput" placeholder="jackets" required />
+              </label>
+              <label class="admin-field-wide">Короткий опис
+                <input type="text" id="categoryDescriptionInput" placeholder="Коротко опишіть товари цієї категорії" />
+              </label>
+            </div>
+            <div class="admin-category-actions">
+              <button class="btn btn--dark" type="submit">Зберегти категорію</button>
+              <button class="btn btn--light" type="button" id="cancelCategoryButton">Очистити</button>
+            </div>
+          </form>
           <div class="admin-table-card" id="adminCategoriesList"></div>
         </section>
 
@@ -224,8 +245,8 @@
               <button class="btn btn--light" type="button" id="revertChangesButton">Повернути останні збережені</button>
             </article>
             <article class="admin-action-card">
-              <div><h2>Скинути демо-дані</h2><p>Повернути початкові товари та тексти шаблону.</p></div>
-              <button class="btn btn--light" type="button" id="resetDataButton">Скинути демо-дані</button>
+              <div><h2>Відновити початкові дані</h2><p>Повернути базові товари та тексти магазину UrbanWear.</p></div>
+              <button class="btn btn--light" type="button" id="resetDataButton">Відновити дані</button>
             </article>
           </div>
         </section>
@@ -247,8 +268,7 @@
             <label>Назва товару <input type="text" id="productTitleInput" required /></label>
             <label>Категорія
               <select id="productCategoryInput">
-                <option value="hoodies">Худі</option><option value="t-shirts">Футболки</option>
-                <option value="pants">Штани</option><option value="accessories">Аксесуари</option>
+                <option value="hoodies">Худі</option>
               </select>
             </label>
             <label>Назва категорії <input type="text" id="productCategoryTitleInput" /></label>
@@ -289,10 +309,10 @@
     </section>
   </main>
 
-  <script src="js/products.js"></script>
+  <script src="js/products.js?v=categories-1"></script>
   <script src="js/auth.js"></script>
   <script src="js/analytics.js"></script>
   <script src="js/orders.js"></script>
-  <script src="js/admin.js"></script>
+  <script src="js/admin.js?v=categories-1"></script>
 </body>
 </html>

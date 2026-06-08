@@ -81,6 +81,43 @@ function renderHeaderControls() {
   });
 }
 
+function renderMobileBottomNav() {
+  if (document.querySelector(".mobile-bottom-nav")) {
+    return;
+  }
+
+  const session = window.UrbanWearAuth ? window.UrbanWearAuth.getSession() : null;
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+  const currentTab = new URLSearchParams(window.location.search).get("tab");
+  const customerAccount = session?.role === "customer";
+  const favoritesHref = customerAccount ? "account.html?tab=favorites" : "auth.html";
+  const cartHref = customerAccount ? "account.html?tab=cart" : "auth.html";
+  const profileHref = session ? "account.html" : "auth.html";
+  const nav = document.createElement("nav");
+
+  nav.className = "mobile-bottom-nav";
+  nav.setAttribute("aria-label", "Мобільна навігація");
+  nav.innerHTML = `
+    <a href="index.html" class="mobile-bottom-nav__item mobile-bottom-nav__item--home ${currentPage === "index.html" ? "is-active" : ""}">
+      <span class="mobile-bottom-nav__icon"></span><span>Головна</span>
+    </a>
+    <a href="catalog.html" class="mobile-bottom-nav__item mobile-bottom-nav__item--catalog ${currentPage === "catalog.html" || currentPage === "product.html" ? "is-active" : ""}">
+      <span class="mobile-bottom-nav__icon"></span><span>Каталог</span>
+    </a>
+    <a href="${favoritesHref}" class="mobile-bottom-nav__item mobile-bottom-nav__item--favorites ${currentPage === "account.html" && currentTab === "favorites" ? "is-active" : ""}">
+      <span class="mobile-bottom-nav__icon"></span><span>Обране</span><b data-favorites-count>0</b>
+    </a>
+    <a href="${cartHref}" class="mobile-bottom-nav__item mobile-bottom-nav__item--cart ${currentPage === "account.html" && currentTab === "cart" ? "is-active" : ""}">
+      <span class="mobile-bottom-nav__icon"></span><span>Кошик</span><b data-cart-count>0</b>
+    </a>
+    <a href="${profileHref}" class="mobile-bottom-nav__item mobile-bottom-nav__item--profile ${currentPage === "account.html" && !currentTab ? "is-active" : ""}">
+      <span class="mobile-bottom-nav__icon"></span><span>Профіль</span>
+    </a>
+  `;
+
+  document.body.append(nav);
+}
+
 function applyMobileHeroImage() {
   const hero = document.querySelector(".hero");
   const heroImage = document.querySelector(".hero__photo-placeholder");
@@ -125,6 +162,7 @@ function applyStoreSettings() {
 
 applyStoreSettings();
 renderHeaderControls();
+renderMobileBottomNav();
 applyMobileHeroImage();
 
 if (burger && nav) {

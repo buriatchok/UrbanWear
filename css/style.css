@@ -12,6 +12,7 @@ a { color: inherit; text-decoration: none; }
 .nav a[aria-current="page"] { color: #000000; }
 .header__btn { background: #111111; color: #ffffff; padding: 12px 20px; border-radius: 999px; font-size: 14px; }
 .mobile-header-shortcuts { display: none; }
+.mobile-bottom-nav { display: none; }
 .hero { padding: 90px 0; }
 .hero__inner { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; }
 .label { text-transform: uppercase; letter-spacing: 0; font-size: 12px; font-weight: 700; color: #777777; margin-bottom: 12px; }

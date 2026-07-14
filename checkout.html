@@ -7,6 +7,7 @@
   <title>Оформлення замовлення — UrbanWear</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/checkout.css" />
+  <link rel="stylesheet" href="css/legal.css?v=cookie-consent-1" />
 </head>
 <body class="checkout-page">
   <main class="checkout-shell">
@@ -37,14 +38,15 @@
           <label class="checkout-option is-selected"><input type="radio" name="delivery" value="branch" checked /><span><strong>На відділення Нової Пошти</strong><small>Орієнтовно 1–2 дні</small></span></label>
           <label class="checkout-option"><input type="radio" name="delivery" value="postomat" /><span><strong>На поштомат Нової Пошти</strong><small>Орієнтовно 1–2 дні</small></span></label>
           <label class="checkout-option"><input type="radio" name="delivery" value="courier" /><span><strong>Кур'єрська доставка</strong><small>Доставка за адресою</small></span></label>
+          <label class="checkout-option"><input type="radio" name="delivery" value="ukrposhta" /><span><strong>Укрпошта</strong><small>Стандарт або Експрес до відділення</small></span></label>
           <div class="checkout-fields checkout-fields--standalone" id="deliveryDynamicFields"></div>
           <label class="checkout-delivery-comment">Коментар для доставки <span>(необов’язково)</span><textarea name="deliveryComment" rows="3" maxlength="150"></textarea></label>
         </article>
 
         <article class="checkout-card">
           <h2><span>3</span>Спосіб оплати</h2>
-          <label class="checkout-option is-selected"><input type="radio" name="payment" value="full" checked /><span><strong>Повна оплата</strong><small>Без комісії</small></span></label>
-          <label class="checkout-option"><input type="radio" name="payment" value="cod" /><span><strong>Оплата при отриманні з передплатою 100 грн</strong><small>Комісія перевізника сплачується окремо</small></span></label>
+          <label class="checkout-option" id="liqpayPaymentOption"><input type="radio" name="payment" value="online" disabled /><span><strong>Онлайн-оплата</strong><small id="liqpayPaymentHint">Вимкнено у презентаційній демо-версії</small></span></label>
+          <label class="checkout-option is-selected"><input type="radio" name="payment" value="cod" checked /><span><strong>Оплата при отриманні</strong><small>Комісія перевізника сплачується окремо</small></span></label>
         </article>
       </section>
 
@@ -52,9 +54,8 @@
         <div class="checkout-summary__head"><h2>Ваше замовлення</h2><a href="cart.html">Редагувати</a></div>
         <div id="checkoutItems"></div>
         <div class="checkout-total"><span>Загальна сума</span><strong id="checkoutTotal">0 грн</strong></div>
-        <div class="checkout-shipping-note"><strong id="checkoutShortfall"></strong></div>
+        <label class="checkout-legal-consent"><input type="checkbox" name="legalConsent" required /><span>Погоджуюсь із <a href="terms.html" target="_blank" rel="noopener">публічною офертою</a>, <a href="returns.html" target="_blank" rel="noopener">правилами повернення</a> та <a href="privacy.html" target="_blank" rel="noopener">обробкою персональних даних</a>.</span></label>
         <button class="checkout-submit" id="checkoutSubmitButton" type="submit">Оформити замовлення</button>
-        <p class="checkout-legal">Оформляючи замовлення, Ви погоджуєтесь з умовами користування та політикою конфіденційності.</p>
         <p class="checkout-message" id="checkoutMessage" role="status" aria-live="polite"></p>
       </aside>
     </form>
@@ -74,12 +75,14 @@
     </section>
   </main>
 
-  <script src="js/products.js?v=categories-1"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/profile.js"></script>
+  <script src="js/cookies.js?v=consent-1"></script>
+  <script src="js/products.js?v=secure-cookie-1"></script>
+  <script src="js/auth.js?v=secure-cookie-1"></script>
+  <script src="js/profile.js?v=server-accounts-1"></script>
   <script src="js/analytics.js"></script>
   <script src="js/cart.js"></script>
-  <script src="js/orders.js"></script>
-  <script src="js/checkout.js"></script>
+  <script src="js/orders.js?v=server-accounts-1"></script>
+  <script src="js/checkout.js?v=demo-static-1"></script>
+  <script src="js/demo-mode.js"></script>
 </body>
 </html>

@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Увійдіть або створіть акаунт UrbanWear, щоб керувати замовленнями, кошиком та обраними товарами." />
   <title>Вхід і реєстрація — UrbanWear</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/mobile-store.css" />
+  <link rel="stylesheet" href="css/style.css?v=local-categories-1" />
+  <link rel="stylesheet" href="css/mobile-store.css?v=local-categories-1" />
+  <link rel="stylesheet" href="css/legal.css?v=cookie-consent-1" />
 </head>
 <body>
   <header class="header">
@@ -40,8 +41,8 @@
       <div class="auth-grid">
         <form class="auth-card" id="loginForm">
           <h2>Вхід</h2>
-          <label>Електронна пошта <input type="email" name="email" value="customer@urbanwear.local" required /></label>
-          <label>Пароль <input type="password" name="password" value="customer123" required /></label>
+          <label>Електронна пошта <input type="email" name="email" autocomplete="email" required /></label>
+          <label>Пароль <input type="password" name="password" autocomplete="current-password" required /></label>
           <button type="submit" class="btn btn--dark">Увійти</button>
 
           <div class="social-login">
@@ -50,14 +51,15 @@
             <button type="button" data-social-login="Instagram">Instagram</button>
           </div>
 
-          <p class="auth-note">Швидкий вхід через соціальний акаунт.</p>
+          <p class="auth-note">Соціальний вхід стане доступним після підключення OAuth.</p>
         </form>
 
         <form class="auth-card" id="registerForm">
           <h2>Реєстрація</h2>
           <label>Ім'я <input type="text" name="name" placeholder="Введіть ім’я" required /></label>
           <label>Електронна пошта <input type="email" name="email" placeholder="example@email.com" required /></label>
-          <label>Пароль <input type="password" name="password" placeholder="Мінімум 4 символи" required /></label>
+          <label>Пароль <input type="password" name="password" minlength="10" autocomplete="new-password" placeholder="Мінімум 10 символів" required /></label>
+          <label class="auth-consent"><input type="checkbox" name="legalConsent" required /><span>Я погоджуюсь із <a href="terms.html" target="_blank" rel="noopener">публічною офертою</a> та <a href="privacy.html" target="_blank" rel="noopener">політикою конфіденційності</a>.</span></label>
           <button type="submit" class="btn btn--light">Створити акаунт</button>
         </form>
 
@@ -66,12 +68,13 @@
     </section>
   </main>
 
-  <script src="js/products.js?v=categories-1"></script>
-  <script src="js/auth.js"></script>
+  <script src="js/cookies.js?v=consent-1"></script>
+  <script src="js/products.js?v=secure-cookie-1"></script>
+  <script src="js/auth.js?v=secure-cookie-1"></script>
   <script src="js/analytics.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/favorites.js"></script>
-  <script src="js/main.js?v=categories-1"></script>
+  <script src="js/main.js?v=local-categories-1"></script>
   <script>
     const authMessage = document.getElementById("authMessage");
 
@@ -79,25 +82,26 @@
       authMessage.textContent = message;
     }
 
-    document.getElementById("loginForm").addEventListener("submit", (event) => {
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
       try {
-        const session = UrbanWearAuth.login(data.get("email"), data.get("password"));
-        window.location.href = session.role === "admin" ? "admin.html" : "account.html";
+        await UrbanWearAuth.login(data.get("email"), data.get("password"));
+        window.location.href = "account.html";
       } catch (error) {
         showAuthMessage(error.message);
       }
     });
 
-    document.getElementById("registerForm").addEventListener("submit", (event) => {
+    document.getElementById("registerForm").addEventListener("submit", async (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
       try {
-        UrbanWearAuth.registerCustomer({
+        await UrbanWearAuth.registerCustomer({
           name: data.get("name"),
           email: data.get("email"),
           password: data.get("password"),
+          legalConsent: data.get("legalConsent") === "on",
         });
         window.location.href = "account.html";
       } catch (error) {
@@ -112,5 +116,6 @@
       });
     });
   </script>
+  <script src="js/demo-mode.js"></script>
 </body>
 </html>

@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Керуйте особистими даними, переглядайте замовлення, кошик та обрані товари в кабінеті UrbanWear." />
   <title>Особистий кабінет — UrbanWear</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/account.css?v=cart-icon-1" />
+  <link rel="stylesheet" href="css/style.css?v=full-product-images-1" />
+  <link rel="stylesheet" href="css/account.css?v=guest-cart-2" />
+  <link rel="stylesheet" href="css/legal.css?v=cookie-consent-1" />
 </head>
 <body class="customer-account-page">
   <main class="customer-account-shell" id="accountShell" hidden>
@@ -115,7 +116,18 @@
         </section>
         <section class="customer-account-panel" data-account-panel="addresses"><div class="customer-placeholder"><strong>Адреси доставки</strong><p>Адреси з ваших замовлень з’являтимуться тут.</p></div></section>
         <section class="customer-account-panel" data-account-panel="payments"><div class="customer-placeholder"><strong>Способи оплати</strong><p>Оберіть основний спосіб оплати під час оформлення наступного замовлення.</p></div></section>
-        <section class="customer-account-panel" data-account-panel="settings"><div class="customer-placeholder"><strong>Налаштування</strong><p>Використовуйте кнопку виходу, щоб завершити поточну сесію.</p><button class="btn btn--dark" type="button" id="accountLogoutSettingsButton">Вийти з акаунту</button></div></section>
+        <section class="customer-account-panel" data-account-panel="settings">
+          <header class="customer-panel-heading"><h1>Безпека акаунта</h1><p>Змініть пароль або завершіть поточну сесію.</p></header>
+          <form class="customer-account-card customer-profile-form" id="customerPasswordForm">
+            <div class="customer-profile-fields">
+              <label>Поточний пароль <input type="password" name="current_password" autocomplete="current-password" required /></label>
+              <label>Новий пароль <input type="password" name="new_password" minlength="10" autocomplete="new-password" required /></label>
+              <label>Повторіть новий пароль <input type="password" name="confirm_password" minlength="10" autocomplete="new-password" required /></label>
+            </div>
+            <div class="customer-profile-actions"><button class="btn btn--light" type="button" id="accountLogoutSettingsButton">Вийти з акаунту</button><button class="btn customer-profile-save" type="submit">Змінити пароль</button></div>
+            <p class="customer-profile-message" id="customerPasswordMessage" role="status" aria-live="polite"></p>
+          </form>
+        </section>
       </div>
     </section>
 
@@ -127,13 +139,15 @@
     </aside>
   </main>
 
-  <script src="js/products.js?v=categories-1"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/profile.js"></script>
+  <script src="js/cookies.js?v=consent-1"></script>
+  <script src="js/products.js?v=secure-cookie-1"></script>
+  <script src="js/auth.js?v=secure-cookie-1"></script>
+  <script src="js/profile.js?v=server-accounts-1"></script>
   <script src="js/analytics.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/favorites.js"></script>
-  <script src="js/orders.js"></script>
-  <script src="js/account.js?v=cart-icon-1"></script>
+  <script src="js/orders.js?v=server-accounts-1"></script>
+  <script src="js/account.js?v=server-accounts-1"></script>
+  <script src="js/demo-mode.js"></script>
 </body>
 </html>

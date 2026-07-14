@@ -1,136 +1,84 @@
-const URBANWEAR_USERS_KEY = "urbanwear-users";
 const URBANWEAR_SESSION_KEY = "urbanwear-session";
+const URBANWEAR_CUSTOMER_TOKEN_KEY = "urbanwear-customer-token";
+const URBANWEAR_ADMIN_TOKEN_KEY = "urbanwear-admin-token";
+const URBANWEAR_ADMIN_SESSION_KEY = "urbanwear-admin-active";
 
-const defaultUsers = [
-  {
-    id: "admin-default",
-    name: "Admin",
-    email: "admin@urbanwear.local",
-    password: "admin123",
-    role: "admin",
-    provider: "password",
-  },
-  {
-    id: "customer-default",
-    name: "Покупець UrbanWear",
-    email: "customer@urbanwear.local",
-    password: "customer123",
-    role: "customer",
-    provider: "password",
-  },
-];
-
-function getUsers() {
-  try {
-    const savedUsers = localStorage.getItem(URBANWEAR_USERS_KEY);
-    return savedUsers ? JSON.parse(savedUsers) : [...defaultUsers];
-  } catch (error) {
-    return [...defaultUsers];
-  }
-}
-
-function saveUsers(users) {
-  localStorage.setItem(URBANWEAR_USERS_KEY, JSON.stringify(users));
-}
+// Remove legacy bearer tokens. Authentication now uses HttpOnly cookies.
+localStorage.removeItem(URBANWEAR_CUSTOMER_TOKEN_KEY);
+localStorage.removeItem(URBANWEAR_ADMIN_TOKEN_KEY);
 
 function getSession() {
-  try {
-    const savedSession = localStorage.getItem(URBANWEAR_SESSION_KEY);
-    return savedSession ? JSON.parse(savedSession) : null;
-  } catch (error) {
-    return null;
-  }
+  try { return JSON.parse(localStorage.getItem(URBANWEAR_SESSION_KEY) || "null"); }
+  catch { return null; }
 }
 
 function setSession(user) {
-  const session = {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    provider: user.provider,
-    createdAt: new Date().toISOString(),
-  };
-
+  const session = { id: user.id, name: user.name, email: user.email, role: "customer", provider: "password" };
   localStorage.setItem(URBANWEAR_SESSION_KEY, JSON.stringify(session));
   return session;
 }
 
-function login(email, password, expectedRole) {
-  const user = getUsers().find(
-    (item) =>
-      item.email.toLowerCase() === email.toLowerCase() &&
-      item.password === password &&
-      (!expectedRole || item.role === expectedRole)
-  );
-
-  if (!user) {
-    throw new Error("Невірний email, пароль або роль користувача.");
-  }
-
-  return setSession(user);
+function getCustomerToken() {
+  return getSession() ? "http-only-cookie" : "";
 }
 
-function registerCustomer({ name, email, password }) {
-  const users = getUsers();
-  const normalizedEmail = email.toLowerCase();
-
-  if (users.some((user) => user.email.toLowerCase() === normalizedEmail)) {
-    throw new Error("Користувач з таким email вже існує.");
-  }
-
-  const user = {
-    id: `customer-${Date.now()}`,
-    name,
-    email: normalizedEmail,
-    password,
-    role: "customer",
-    provider: "password",
-  };
-
-  users.push(user);
-  saveUsers(users);
-  return setSession(user);
+function customerHeaders() {
+  return {};
 }
 
-function socialLogin(provider) {
-  const users = getUsers();
-  const normalizedProvider = provider.toLowerCase();
-  const email = `${normalizedProvider}-customer@urbanwear.local`;
-  let user = users.find((item) => item.email === email);
+async function login(email, password) {
+  const result = await window.UrbanWearStore.api("/api/account/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+  return setSession(result.customer);
+}
 
-  if (!user) {
-    user = {
-      id: `${normalizedProvider}-${Date.now()}`,
-      name: `Покупець ${provider}`,
-      email,
-      password: "",
-      role: "customer",
-      provider,
-    };
-    users.push(user);
-    saveUsers(users);
-  }
+async function registerCustomer({ name, email, password, legalConsent }) {
+  const result = await window.UrbanWearStore.api("/api/account/register", {
+    method: "POST",
+    body: JSON.stringify({ name, email, password, legal_consent: legalConsent === true }),
+  });
+  return setSession(result.customer);
+}
 
-  return setSession(user);
+function socialLogin() {
+  return setSession({ id: "demo-social", name: "Demo Customer", email: "demo@urbanwear.local" });
 }
 
 function logout() {
   localStorage.removeItem(URBANWEAR_SESSION_KEY);
+  localStorage.removeItem(URBANWEAR_CUSTOMER_TOKEN_KEY);
+  localStorage.removeItem(URBANWEAR_ADMIN_TOKEN_KEY);
+  localStorage.removeItem(URBANWEAR_ADMIN_SESSION_KEY);
+}
+
+function getAdminToken() {
+  return "";
+}
+
+function getAdminSession() {
+  return localStorage.getItem(URBANWEAR_ADMIN_SESSION_KEY) === "1";
+}
+
+async function adminLogin(email, password) {
+  const result = await window.UrbanWearStore.api("/api/admin/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+  localStorage.setItem(URBANWEAR_ADMIN_SESSION_KEY, "1");
+  return result;
 }
 
 function requireRole(role) {
-  const session = getSession();
-  return Boolean(session && session.role === role);
+  return role === "admin" ? getAdminSession() : getSession()?.role === role;
+}
+
+function adminHeaders() {
+  return {};
 }
 
 window.UrbanWearAuth = {
-  getUsers,
-  saveUsers,
-  getSession,
-  login,
-  registerCustomer,
-  socialLogin,
-  logout,
-  requireRole,
+  getSession, login, registerCustomer, socialLogin, logout, requireRole,
+  getCustomerToken, customerHeaders, getAdminToken, getAdminSession, adminLogin, adminHeaders,
 };

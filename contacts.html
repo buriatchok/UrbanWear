@@ -8,8 +8,9 @@
     content="Зв’яжіться з командою UrbanWear для консультації, уточнення замовлення або питань щодо доставки та повернення."
   />
   <title>Контакти — UrbanWear</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/mobile-store.css" />
+  <link rel="stylesheet" href="css/style.css?v=local-categories-1" />
+  <link rel="stylesheet" href="css/mobile-store.css?v=local-categories-1" />
+  <link rel="stylesheet" href="css/legal.css?v=cookie-consent-1" />
 </head>
 <body>
   <header class="header">
@@ -54,11 +55,11 @@
           </p>
 
           <div class="contact-actions">
-            <a href="https://t.me/yourusername" target="_blank" rel="noopener" class="btn btn--light" data-store-href="telegramUrl">
+            <a href="#demo-messenger-disabled" class="btn btn--light" data-store-href="telegramUrl" data-demo-disabled="messenger" aria-disabled="true">
               Telegram
             </a>
 
-            <a href="viber://chat?number=%2B380000000000" class="btn btn--light" data-store-href="viberUrl">
+            <a href="#demo-messenger-disabled" class="btn btn--light" data-store-href="viberUrl" data-demo-disabled="messenger" aria-disabled="true">
               Viber
             </a>
           </div>
@@ -139,15 +140,19 @@
         <a href="catalog.html">Каталог</a>
         <a href="delivery.html">Доставка</a>
         <a href="contacts.html">Контакти</a>
+        <a href="privacy.html">Конфіденційність</a>
+        <button type="button" data-cookie-settings>Cookie-файли</button>
       </div>
     </div>
   </footer>
 
-  <script src="js/products.js?v=categories-1"></script>
-  <script src="js/auth.js"></script>
+  <script src="js/cookies.js?v=consent-1"></script>
+  <script src="js/products.js?v=secure-cookie-1"></script>
+  <script src="js/auth.js?v=secure-cookie-1"></script>
   <script src="js/analytics.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/favorites.js"></script>
-  <script src="js/main.js?v=categories-1"></script>
+  <script src="js/main.js?v=local-categories-1"></script>
+  <script src="js/demo-mode.js"></script>
 </body>
 </html>

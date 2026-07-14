@@ -1,3 +1,4 @@
+window.UrbanWearStore.ready.then(() => {
 const activeStoreData =
   typeof storeData !== "undefined" ? storeData : { settings: {}, products: {} };
 const storeSettings = activeStoreData.settings || {};
@@ -59,8 +60,8 @@ function renderHeaderControls() {
     actions.insertAdjacentHTML(
       "beforeend",
       `
-        <a href="${session?.role === "customer" ? "account.html?tab=favorites" : "auth.html"}" class="header-icon-link header-icon-link--favorites">Обране <span data-favorites-count>0</span></a>
-        <a href="${session?.role === "customer" ? "account.html?tab=cart" : "auth.html"}" class="header-icon-link header-icon-link--cart">Кошик <span data-cart-count>0</span></a>
+        <a href="account.html?tab=favorites" class="header-icon-link header-icon-link--favorites">Обране <span data-favorites-count>0</span></a>
+        <a href="account.html?tab=cart" class="header-icon-link header-icon-link--cart">Кошик <span data-cart-count>0</span></a>
         ${
           session
             ? `<a href="account.html" class="header-icon-link header-icon-link--profile">${escapeHtml(session.name)}</a>`
@@ -74,8 +75,8 @@ function renderHeaderControls() {
     const mobileShortcuts = document.createElement("div");
     mobileShortcuts.className = "mobile-header-shortcuts";
     mobileShortcuts.innerHTML = `
-      <a href="${session?.role === "customer" ? "account.html?tab=favorites" : "auth.html"}" class="mobile-header-shortcut mobile-header-shortcut--favorites" aria-label="Обране"><span data-favorites-count>0</span></a>
-      <a href="${session?.role === "customer" ? "account.html?tab=cart" : "auth.html"}" class="mobile-header-shortcut mobile-header-shortcut--cart" aria-label="Кошик"><span data-cart-count>0</span></a>
+      <a href="account.html?tab=favorites" class="mobile-header-shortcut mobile-header-shortcut--favorites" aria-label="Обране"><span data-favorites-count>0</span></a>
+      <a href="account.html?tab=cart" class="mobile-header-shortcut mobile-header-shortcut--cart" aria-label="Кошик"><span data-cart-count>0</span></a>
       <a href="${session ? "account.html" : "auth.html"}" class="mobile-header-shortcut mobile-header-shortcut--profile" aria-label="Профіль"></a>
     `;
     header.append(mobileShortcuts);
@@ -91,8 +92,8 @@ function renderMobileBottomNav() {
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
   const currentTab = new URLSearchParams(window.location.search).get("tab");
   const customerAccount = session?.role === "customer";
-  const favoritesHref = customerAccount ? "account.html?tab=favorites" : "auth.html";
-  const cartHref = customerAccount ? "account.html?tab=cart" : "auth.html";
+  const favoritesHref = "account.html?tab=favorites";
+  const cartHref = "account.html?tab=cart";
   const profileHref = session ? "account.html" : "auth.html";
   const nav = document.createElement("nav");
 
@@ -119,7 +120,7 @@ function renderMobileBottomNav() {
   document.body.append(nav);
 }
 
-function applyMobileHeroImage() {
+function applyHeroImage() {
   const hero = document.querySelector(".hero");
   const heroImage = document.querySelector(".hero__photo-placeholder");
 
@@ -127,15 +128,15 @@ function applyMobileHeroImage() {
     return;
   }
 
-  const featuredProduct =
-    Object.values(publicProducts).find(
-      (product) => product.isPopular === true && getPrimaryProductImage(product)
-    ) || Object.values(publicProducts).find((product) => getPrimaryProductImage(product));
-  const image = featuredProduct ? getPrimaryProductImage(featuredProduct) : "";
+  const image = storeSettings.heroImage || "";
 
   if (image) {
-    hero.style.setProperty("--mobile-hero-image", `url("${image.replaceAll('"', '\\"')}")`);
+    const resolvedImage = image.startsWith("data:") ? image : new URL(image, document.baseURI).href;
+    const safeImage = resolvedImage.replaceAll('"', '\\"');
+    hero.style.setProperty("--mobile-hero-image", `url("${safeImage}")`);
+    heroImage.style.backgroundImage = `url("${safeImage}")`;
     hero.classList.add("hero--has-mobile-image");
+    heroImage.classList.add("hero__photo-placeholder--image");
   }
 }
 
@@ -164,7 +165,7 @@ function applyStoreSettings() {
 applyStoreSettings();
 renderHeaderControls();
 renderMobileBottomNav();
-applyMobileHeroImage();
+applyHeroImage();
 
 if (burger && nav) {
   burger.setAttribute("aria-expanded", "false");
@@ -186,7 +187,7 @@ if (burger && nav) {
 }
 
 function createProductCard(productId, product) {
-  const productUrl = `product.html?id=${encodeURIComponent(productId)}`;
+  const productUrl = `product.html?slug=${encodeURIComponent(productId)}`;
   const hasPhoto = Boolean(getPrimaryProductImage(product));
 
   return `
@@ -211,9 +212,9 @@ function createProductCard(productId, product) {
             class="product-card__btn product-card__btn--light"
             type="button"
             data-add-to-cart="${escapeAttribute(productId)}"
-            data-default-text="До кошика"
+            data-default-text="Обрати розмір"
           >
-            До кошика
+            Обрати розмір
           </button>
         </div>
       </div>
@@ -225,6 +226,8 @@ function renderStoreCategories() {
   const categoryEntries = Object.entries(activeCategories);
   const catalogFilter = document.getElementById("catalogCategoryFilter");
   const categoryGrid = document.getElementById("storeCategoryGrid");
+  const homeCategoryTabs = document.getElementById("homeCategoryTabs");
+  const categoryDots = document.getElementById("categoryDots");
 
   if (catalogFilter) {
     catalogFilter.innerHTML = `
@@ -238,18 +241,93 @@ function renderStoreCategories() {
     `;
   }
 
+  if (homeCategoryTabs) {
+    homeCategoryTabs.innerHTML = `
+      <button class="category-tab is-active" type="button" data-category-slide="all">Усі</button>
+      ${categoryEntries
+        .map(
+          ([slug, category]) =>
+            `<button class="category-tab" type="button" data-category-slide="${escapeAttribute(slug)}">${escapeHtml(category.title)}</button>`
+        )
+        .join("")}
+    `;
+  }
+
   if (categoryGrid) {
     categoryGrid.innerHTML = categoryEntries
       .map(
-        ([slug, category], index) => `
-          <a href="catalog.html?category=${encodeURIComponent(slug)}" class="category-card">
-            <span>${String(index + 1).padStart(2, "0")}</span>
-            <h3>${escapeHtml(category.title)}</h3>
-            <p>${escapeHtml(category.description || "Перегляньте товари цієї категорії.")}</p>
+        ([slug, category], index) => {
+          const categoryProduct = Object.values(publicProducts).find((product) => product.category === slug) || {};
+          const categoryImage = getPrimaryProductImage(categoryProduct);
+          const fallbackImage = slug === "hoodies" ? "assets/mobile-hero-model.png" : "";
+          const image = categoryImage || fallbackImage;
+          const imageStyle = image
+            ? `background-image:url('${escapeAttribute(image)}');`
+            : `--category-bg:${escapeAttribute(categoryProduct.visual || "linear-gradient(135deg,#e7e0d6,#b8ada0)")};`;
+          return `
+          <a href="catalog.html?category=${encodeURIComponent(slug)}" class="category-card category-slide" data-category-slug="${escapeAttribute(slug)}">
+            <div class="category-slide__image" style="${imageStyle}">
+              <span class="category-slide__number">${String(index + 1).padStart(2, "0")}</span>
+              <span class="category-slide__visual-label">${escapeHtml(categoryProduct.imageLabel || category.title)}</span>
+            </div>
+            <div class="category-slide__content">
+              <div>
+                <h3>${escapeHtml(category.title)}</h3>
+                <p>${escapeHtml(category.description || "Перегляньте товари цієї категорії.")}</p>
+              </div>
+              <span class="category-slide__arrow" aria-hidden="true">→</span>
+            </div>
           </a>
-        `
+        `;
+        }
       )
       .join("");
+  }
+
+  if (categoryDots) {
+    categoryDots.innerHTML = categoryEntries
+      .map(([, category], index) => `<button class="category-dot ${index === 0 ? "is-active" : ""}" type="button" data-category-dot="${index}" aria-label="${escapeAttribute(category.title)}"></button>`)
+      .join("");
+  }
+
+  if (categoryGrid && homeCategoryTabs && categoryDots) {
+    const slides = [...categoryGrid.querySelectorAll(".category-slide")];
+    const tabs = [...homeCategoryTabs.querySelectorAll(".category-tab")];
+    const dots = [...categoryDots.querySelectorAll(".category-dot")];
+
+    const setActiveCategory = (index) => {
+      dots.forEach((dot, dotIndex) => dot.classList.toggle("is-active", dotIndex === index));
+      tabs.forEach((tab) => tab.classList.toggle("is-active", tab.dataset.categorySlide === (slides[index]?.dataset.categorySlug || "all")));
+    };
+
+    const scrollToSlide = (index) => {
+      const slide = slides[index];
+      if (!slide) return;
+      categoryGrid.scrollTo({ left: slide.offsetLeft - categoryGrid.offsetLeft, behavior: "smooth" });
+      setActiveCategory(index);
+    };
+
+    let categoryScrollFrame = 0;
+    categoryGrid.addEventListener("scroll", () => {
+      cancelAnimationFrame(categoryScrollFrame);
+      categoryScrollFrame = requestAnimationFrame(() => {
+        const index = slides.reduce((closestIndex, slide, slideIndex) => {
+          const closest = slides[closestIndex];
+          return Math.abs(slide.offsetLeft - categoryGrid.scrollLeft) < Math.abs(closest.offsetLeft - categoryGrid.scrollLeft)
+            ? slideIndex
+            : closestIndex;
+        }, 0);
+        setActiveCategory(index);
+      });
+    });
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        if (tab.dataset.categorySlide === "all") scrollToSlide(0);
+        else scrollToSlide(slides.findIndex((slide) => slide.dataset.categorySlug === tab.dataset.categorySlide));
+      });
+    });
+    dots.forEach((dot) => dot.addEventListener("click", () => scrollToSlide(Number(dot.dataset.categoryDot))));
   }
 }
 
@@ -260,7 +338,7 @@ const catalogProductsContainer = document.getElementById("catalogProducts");
 if (catalogProductsContainer) {
   catalogProductsContainer.innerHTML = Object.entries(publicProducts)
     .map(([productId, product]) => createProductCard(productId, product))
-    .join("");
+    .join("") || '<p class="form-message">Активних товарів поки немає.</p>';
 }
 
 const popularProductsContainer = document.getElementById("popularProducts");
@@ -272,7 +350,7 @@ if (popularProductsContainer) {
 
   popularProductsContainer.innerHTML = popularProducts
     .map(([productId, product]) => createProductCard(productId, product))
-    .join("");
+    .join("") || '<p class="form-message">Популярних товарів поки немає.</p>';
 }
 
 const filterButtons = document.querySelectorAll(".filter-btn");
@@ -315,7 +393,7 @@ if (filterButtons.length > 0) {
 }
 
 const params = new URLSearchParams(window.location.search);
-const productId = params.get("id");
+const productId = params.get("slug") || params.get("id");
 const catalogSearch = params.get("search")?.trim().toLowerCase();
 const productEntries = Object.entries(publicProducts);
 
@@ -325,9 +403,8 @@ if (catalogProductsContainer && catalogSearch) {
   });
 }
 
-if (productEntries.length > 0 && document.getElementById("productTitle")) {
-  const fallbackId = productEntries[0][0];
-  const activeProductId = publicProducts[productId] ? productId : fallbackId;
+if (productEntries.length > 0 && document.getElementById("productTitle") && publicProducts[productId]) {
+  const activeProductId = productId;
   const product = publicProducts[activeProductId];
 
   const title = document.getElementById("productTitle");
@@ -338,6 +415,7 @@ if (productEntries.length > 0 && document.getElementById("productTitle")) {
   const productVisual = document.getElementById("productVisual");
   const productThumbs = document.querySelector(".product-gallery__thumbs");
   const specs = document.getElementById("productSpecs");
+  const sizeList = document.querySelector(".size-list");
 
   if (title) title.textContent = product.title;
   if (description) description.textContent = product.description;
@@ -351,6 +429,9 @@ if (productEntries.length > 0 && document.getElementById("productTitle")) {
     productVisual.classList.toggle("product-gallery__main--photo", Boolean(primaryImage));
     productVisual.style.setProperty("--product-bg", product.visual);
     productVisual.style.backgroundImage = primaryImage ? `url('${primaryImage}')` : "";
+    productVisual.style.backgroundSize = primaryImage ? "contain" : "";
+    productVisual.style.backgroundPosition = "center";
+    productVisual.style.backgroundRepeat = "no-repeat";
 
     if (productThumbs && productImages.length > 0) {
       productThumbs.innerHTML = productImages
@@ -364,6 +445,9 @@ if (productEntries.length > 0 && document.getElementById("productTitle")) {
       productThumbs.querySelectorAll("[data-product-image]").forEach((button) => {
         button.addEventListener("click", () => {
           productVisual.style.backgroundImage = `url('${button.dataset.productImage}')`;
+          productVisual.style.backgroundSize = "contain";
+          productVisual.style.backgroundPosition = "center";
+          productVisual.style.backgroundRepeat = "no-repeat";
           productThumbs.querySelectorAll(".product-gallery__thumb").forEach((thumb) => {
             thumb.classList.toggle("is-active", thumb === button);
           });
@@ -384,6 +468,11 @@ if (productEntries.length > 0 && document.getElementById("productTitle")) {
       li.textContent = spec;
       specs.appendChild(li);
     });
+  }
+  if (sizeList) {
+    sizeList.innerHTML = product.sizes.length
+      ? product.sizes.map((size, index) => `<button type="button" data-size="${escapeAttribute(size)}" class="${index === 0 ? "is-active" : ""}">${escapeHtml(size)}</button>`).join("")
+      : '<span>Немає доступних розмірів</span>';
   }
 
   document.title = `${product.title} — купити в ${storeSettings.brandName || "UrbanWear"}`;
@@ -463,3 +552,4 @@ if (contactForm && formMessage) {
       storeSettings.formSuccessMessage || "Повідомлення надіслано. Дякуємо за звернення.";
   });
 }
+}).catch(() => {});

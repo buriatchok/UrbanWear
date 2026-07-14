@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Результат оплати замовлення UrbanWear." />
+  <title>Результат оплати — UrbanWear</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/checkout.css" />
+</head>
+<body class="checkout-page">
+  <main class="checkout-shell">
+    <section class="checkout-success">
+      <span class="checkout-success__mark">✓</span>
+      <h1>Дякуємо!</h1>
+      <p>Це презентаційна сторінка демо-версії. Платіжні сервіси не підключені, а статус замовлення показується тільки локально.</p>
+      <div class="checkout-success__number"><span>Замовлення</span><strong id="paymentResultOrder">UrbanWear</strong></div>
+      <div class="checkout-success__actions"><a class="btn btn--dark" href="account.html?tab=orders">Мої замовлення</a><a class="btn btn--light" href="catalog.html">До каталогу</a></div>
+    </section>
+  </main>
+  <script>
+    const order = new URLSearchParams(location.search).get("order");
+    if (order) document.getElementById("paymentResultOrder").textContent = order;
+  </script>
+  <script src="js/demo-mode.js"></script>
+</body>
+</html>

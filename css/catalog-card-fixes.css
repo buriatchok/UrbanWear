@@ -1,0 +1,49 @@
+/* Loaded last on pages with product grids so older responsive rules cannot override it. */
+.product-grid,
+.product-grid--catalog {
+  align-items: stretch;
+}
+
+.product-card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
+}
+
+.product-card__body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-card__body h3 {
+  display: -webkit-box;
+  min-height: 2.6em;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.product-card__body p {
+  display: -webkit-box;
+  min-height: 4.05em;
+  overflow: hidden;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.product-card__body strong {
+  margin-top: auto;
+}
+
+.product-card__actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+}
+
+.product-card__actions .product-card__btn {
+  width: 100%;
+  justify-content: center;
+}

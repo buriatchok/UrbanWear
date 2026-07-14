@@ -8,8 +8,10 @@
     content="Товар UrbanWear: сучасний дизайн, зручний крій, актуальні розміри та доставка по Україні."
   />
   <title>Товар UrbanWear — купити з доставкою по Україні</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/mobile-store.css" />
+  <link rel="stylesheet" href="css/style.css?v=full-product-images-2" />
+  <link rel="stylesheet" href="css/mobile-store.css?v=full-product-images-2" />
+  <link rel="stylesheet" href="css/catalog-card-fixes.css?v=equal-actions-1" />
+  <link rel="stylesheet" href="css/legal.css?v=cookie-consent-1" />
 </head>
 <body>
   <header class="header">
@@ -27,6 +29,8 @@
         <a href="catalog.html">Каталог</a>
         <a href="delivery.html">Доставка</a>
         <a href="contacts.html">Контакти</a>
+        <a href="privacy.html">Конфіденційність</a>
+        <button type="button" data-cookie-settings>Cookie-файли</button>
       </nav>
 
       <a href="contacts.html" class="header__btn">Замовити</a>
@@ -77,19 +81,21 @@
 
           <div class="product-actions">
             <a
-              href="https://t.me/yourusername"
-              target="_blank"
-              rel="noopener"
+              href="#demo-messenger-disabled"
               class="btn btn--light"
               data-store-href="telegramUrl"
+              data-demo-disabled="messenger"
+              aria-disabled="true"
             >
               Написати в Telegram
             </a>
 
             <a
-              href="viber://chat?number=%2B380000000000"
+              href="#demo-messenger-disabled"
               class="btn btn--light"
               data-store-href="viberUrl"
+              data-demo-disabled="messenger"
+              aria-disabled="true"
             >
               Написати у Viber
             </a>
@@ -133,11 +139,13 @@
     </div>
   </footer>
 
-  <script src="js/products.js?v=categories-1"></script>
-  <script src="js/auth.js"></script>
+  <script src="js/cookies.js?v=consent-1"></script>
+  <script src="js/products.js?v=secure-cookie-1"></script>
+  <script src="js/auth.js?v=secure-cookie-1"></script>
   <script src="js/analytics.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/favorites.js"></script>
-  <script src="js/main.js?v=categories-1"></script>
+  <script src="js/main.js?v=full-product-images-2"></script>
+  <script src="js/demo-mode.js"></script>
 </body>
 </html>

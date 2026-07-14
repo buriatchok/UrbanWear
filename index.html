@@ -8,8 +8,10 @@
     content="UrbanWear — інтернет-магазин сучасного streetwear-одягу. Худі, футболки, штани та аксесуари для щоденних міських образів із доставкою по Україні."
   />
   <title>UrbanWear — сучасний streetwear та базовий одяг для міста</title>
-  <link rel="stylesheet" href="css/style.css?v=mobile-nav-3" />
-  <link rel="stylesheet" href="css/mobile-store.css?v=mobile-nav-3" />
+  <link rel="stylesheet" href="css/style.css?v=full-product-images-1" />
+  <link rel="stylesheet" href="css/mobile-store.css?v=full-product-images-1" />
+  <link rel="stylesheet" href="css/catalog-card-fixes.css?v=equal-actions-1" />
+  <link rel="stylesheet" href="css/legal.css?v=cookie-consent-1" />
 </head>
 <body>
   <header class="header">
@@ -27,6 +29,8 @@
         <a href="catalog.html">Каталог</a>
         <a href="delivery.html">Доставка</a>
         <a href="contacts.html">Контакти</a>
+        <a href="privacy.html">Конфіденційність</a>
+        <button type="button" data-cookie-settings>Cookie-файли</button>
       </nav>
 
       <a href="catalog.html" class="header__btn">До каталогу</a>
@@ -61,10 +65,17 @@
       <div class="container">
         <div class="section-heading">
           <p class="label">Категорії</p>
-          <h2>Популярні категорії</h2>
+          <h2>Категорії товарів</h2>
         </div>
 
-        <div class="category-grid" id="storeCategoryGrid"></div>
+        <div class="category-tabs" id="homeCategoryTabs" aria-label="Категорії товарів"></div>
+        <div class="category-grid category-slider" id="storeCategoryGrid"></div>
+        <div class="category-dots" id="categoryDots" aria-label="Навігація слайдера категорій"></div>
+        <a class="category-catalog-link" href="catalog.html">
+          <span class="category-catalog-link__icon" aria-hidden="true">⌁</span>
+          <span>Перейти в каталог</span>
+          <span class="category-catalog-link__arrow" aria-hidden="true">→</span>
+        </a>
       </div>
     </section>
 
@@ -162,11 +173,13 @@
     </div>
   </footer>
 
-  <script src="js/products.js?v=categories-1"></script>
-  <script src="js/auth.js"></script>
+  <script src="js/cookies.js?v=consent-1"></script>
+  <script src="js/products.js?v=secure-cookie-1"></script>
+  <script src="js/auth.js?v=secure-cookie-1"></script>
   <script src="js/analytics.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/favorites.js"></script>
-  <script src="js/main.js?v=categories-1"></script>
+  <script src="js/main.js?v=local-assets-2"></script>
+  <script src="js/demo-mode.js"></script>
 </body>
 </html>

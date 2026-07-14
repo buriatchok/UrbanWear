@@ -1,160 +1,153 @@
+const checkoutForm = document.getElementById("checkoutForm");
 const checkoutItems = document.getElementById("checkoutItems");
 const checkoutTotal = document.getElementById("checkoutTotal");
-const checkoutShortfall = document.getElementById("checkoutShortfall");
-const checkoutForm = document.getElementById("checkoutForm");
 const checkoutMessage = document.getElementById("checkoutMessage");
 const checkoutSubmitButton = document.getElementById("checkoutSubmitButton");
 const deliveryDynamicFields = document.getElementById("deliveryDynamicFields");
-const checkoutSuccess = document.getElementById("checkoutSuccess");
-const checkoutSuccessNumber = document.getElementById("checkoutSuccessNumber");
-const checkoutSuccessBenefits = document.getElementById("checkoutSuccessBenefits");
-const copyOrderNumberButton = document.getElementById("copyOrderNumberButton");
-const checkoutSession = window.UrbanWearAuth?.getSession();
-const checkoutProfile = checkoutSession?.role === "customer" ? window.UrbanWearProfile.getProfile(checkoutSession) : null;
+const checkoutIdempotencyKey = crypto.randomUUID ? crypto.randomUUID() : `checkout-${Date.now()}-${Math.random()}`;
+let novaCities = [];
+let novaWarehouses = [];
+let novaSearchTimer;
+let checkoutConfig = { payment: { enabled: false }, delivery: {} };
 
-function getCheckoutRows() {
-  const cart = window.UrbanWearCart?.getCart() || {};
-  const meta = window.UrbanWearCart?.getCartMeta() || {};
-  return Object.entries(cart).filter(([id]) => products[id]).map(([id, quantity]) => ({
-    id, product: products[id], quantity: Number(quantity), options: meta[id] || {},
-    price: parsePrice(products[id].price), subtotal: parsePrice(products[id].price) * Number(quantity),
-  }));
+function renderNovaOptions(listId, values) {
+  const list = document.getElementById(listId);
+  if (list) list.innerHTML = values.map((value) => `<option value="${escapeCartHtml(value)}"></option>`).join("");
 }
 
-function getCheckoutTotals() {
-  const subtotal = getCheckoutRows().reduce((sum, row) => sum + row.subtotal, 0);
-  const promo = localStorage.getItem("urbanwear-promo") || "";
-  const discountRate = promo === "URBAN10" ? .1 : promo === "WELCOME5" ? .05 : 0;
-  const discount = Math.round(subtotal * discountRate);
-  const delivery = promo === "FREEDELIVERY" || subtotal >= 1500 ? 0 : 120;
-  return { subtotal, discount, delivery, total: subtotal - discount + delivery };
+async function loadNovaCities(search) {
+  novaCities = await window.UrbanWearStore.api(`/api/delivery/nova-poshta/cities?search=${encodeURIComponent(search)}`);
+  renderNovaOptions("novaCitiesList", novaCities.map((city) => city.name));
 }
 
-function getCheckoutImage(product) {
-  const image = Array.isArray(product.images) ? product.images.filter(Boolean)[0] : "";
-  return image ? `background-image:url('${escapeCartHtml(image)}')` : `--product-bg:${escapeCartHtml(product.visual)}`;
+async function loadNovaWarehouses() {
+  const cityInput = deliveryDynamicFields.querySelector('[name="city"]');
+  const city = novaCities.find((entry) => entry.name === cityInput?.value);
+  if (!city) return;
+  novaWarehouses = await window.UrbanWearStore.api(`/api/delivery/nova-poshta/warehouses?city_ref=${encodeURIComponent(city.ref)}`);
+  const method = checkoutForm.querySelector('input[name="delivery"]:checked')?.value;
+  const names = novaWarehouses
+    .filter((warehouse) => method === "postomat" ? /поштомат|postomat/i.test(warehouse.category) : !/поштомат|postomat/i.test(warehouse.category))
+    .map((warehouse) => warehouse.name);
+  renderNovaOptions("novaWarehousesList", names);
 }
 
-function renderCheckoutSummary() {
-  const rows = getCheckoutRows();
-  const totals = getCheckoutTotals();
-  if (!rows.length) {
-    checkoutItems.innerHTML = '<div class="checkout-empty"><strong>Кошик порожній</strong><a class="btn btn--dark" href="catalog.html">До каталогу</a></div>';
-    checkoutTotal.textContent = "0 грн";
-    checkoutShortfall.textContent = "Додайте товари, щоб оформити замовлення.";
-    checkoutSubmitButton.disabled = true;
-    return;
+function setupNovaPoshtaFields() {
+  const cityInput = deliveryDynamicFields.querySelector('[name="city"]');
+  const officeInput = deliveryDynamicFields.querySelector('[name="office"]');
+  const method = checkoutForm.querySelector('input[name="delivery"]:checked')?.value;
+  if (!cityInput) return;
+  cityInput.addEventListener("input", () => {
+    clearTimeout(novaSearchTimer);
+    if (cityInput.value.trim().length < 2) return;
+    novaSearchTimer = setTimeout(() => loadNovaCities(cityInput.value.trim()).catch(() => {}), 250);
+  });
+  if (method !== "courier") {
+    cityInput.addEventListener("change", () => loadNovaWarehouses().catch(() => {}));
+    officeInput?.addEventListener("focus", () => loadNovaWarehouses().catch(() => {}));
   }
-  checkoutItems.innerHTML = rows.map((row) => `
-    <article class="checkout-summary-item">
-      <div class="checkout-summary-item__image" style="${getCheckoutImage(row.product)}"><span>${escapeCartHtml(row.product.imageLabel)}</span></div>
-      <div><h3>${escapeCartHtml(row.product.title)}</h3>${row.options.size ? `<p>Розмір: ${escapeCartHtml(row.options.size)}</p>` : ""}<p>Кількість: ${row.quantity}</p></div>
-      <strong>${formatPrice(row.subtotal)}</strong>
-    </article>`).join("");
-  checkoutTotal.textContent = formatPrice(totals.total);
-  const shortfall = Math.max(0, 1500 - totals.subtotal);
-  checkoutShortfall.textContent = shortfall ? `До безкоштовної доставки не вистачає ${formatPrice(shortfall)}` : "Для замовлення доступна безкоштовна доставка";
-  checkoutSubmitButton.disabled = false;
+}
+
+async function loadUkrposhtaOffices() {
+  const officeInput = deliveryDynamicFields.querySelector('[name="office"]');
+  const postcode = String(officeInput?.value || "").match(/\b\d{5}\b/)?.[0] || "";
+  if (!postcode) return;
+  const offices = await window.UrbanWearStore.api(`/api/delivery/ukrposhta/offices?postcode=${encodeURIComponent(postcode)}`);
+  renderNovaOptions("ukrposhtaOfficesList", offices.map((office) => `${office.postcode} — ${office.name}${office.address ? `, ${office.address}` : ""}`));
+}
+
+function setupUkrposhtaFields() {
+  const officeInput = deliveryDynamicFields.querySelector('[name="office"]');
+  if (!officeInput) return;
+  officeInput.addEventListener("input", () => {
+    clearTimeout(novaSearchTimer);
+    if (!/\d{5}/.test(officeInput.value)) return;
+    novaSearchTimer = setTimeout(() => loadUkrposhtaOffices().catch(() => {}), 250);
+  });
 }
 
 function renderDeliveryFields() {
   const method = checkoutForm.querySelector('input[name="delivery"]:checked')?.value || "branch";
-  const city = '<label>Населений пункт <input type="text" name="city" required /></label>';
+  const city = '<label>Населений пункт <input type="text" name="city" list="novaCitiesList" autocomplete="off" required /><datalist id="novaCitiesList"></datalist></label>';
   const fields = {
-    branch: `${city}<label>Номер відділення <input type="text" name="branch" required /></label>`,
-    postomat: `${city}<label>Номер поштомату <input type="text" name="postomat" required /></label>`,
-    courier: `${city}<label>Вулиця <input type="text" name="street" required /></label><label>Будинок <input type="text" name="house" required /></label><label>Квартира <input type="text" name="apartment" /></label>`,
+    branch: `${city}<label>Відділення <input type="text" name="office" list="novaWarehousesList" autocomplete="off" required /><datalist id="novaWarehousesList"></datalist></label>`,
+    postomat: `${city}<label>Поштомат <input type="text" name="office" list="novaWarehousesList" autocomplete="off" required /><datalist id="novaWarehousesList"></datalist></label>`,
+    courier: `${city}<label>Адреса <input type="text" name="office" required /></label>`,
+    ukrposhta: '<label>Населений пункт <input type="text" name="city" autocomplete="address-level2" required /></label><label>Індекс або відділення <input type="text" name="office" list="ukrposhtaOfficesList" inputmode="numeric" autocomplete="postal-code" placeholder="Наприклад, 01001" required /><datalist id="ukrposhtaOfficesList"></datalist></label>',
   };
   deliveryDynamicFields.innerHTML = fields[method];
-  autofillDeliveryProfile();
+  if (method === "ukrposhta") setupUkrposhtaFields();
+  else setupNovaPoshtaFields();
 }
 
-function setCheckoutValue(name, value) {
-  const field = checkoutForm.elements[name];
-  if (field && value && !field.value) field.value = value;
+function renderCheckout() {
+  const rows = window.UrbanWearCart.getCartRows();
+  checkoutItems.innerHTML = rows.length ? rows.map((row) => `<article class="checkout-summary-item">
+    <div class="checkout-summary-item__image" style="${row.product.images?.[0] ? `background-image:url('${escapeCartHtml(row.product.images[0])}')` : ""}"></div>
+    <div><h3>${escapeCartHtml(row.product.title)}</h3><p>Розмір: ${escapeCartHtml(row.options.size)}</p><p>Кількість: ${row.quantity}</p></div>
+    <strong>${formatPrice(row.subtotal)}</strong></article>`).join("") : "<p>Кошик порожній.</p>";
+  checkoutTotal.textContent = formatPrice(rows.reduce((sum, row) => sum + row.subtotal, 0));
+  checkoutSubmitButton.disabled = !rows.length;
 }
 
-function autofillDeliveryProfile() {
-  if (!checkoutProfile || !(checkoutProfile.useAsDefault || checkoutProfile.defaultAddressEnabled)) return;
-  setCheckoutValue("city", checkoutProfile.city);
-  const method = checkoutForm.querySelector('input[name="delivery"]:checked')?.value || "branch";
-  if (method === "branch") setCheckoutValue("branch", checkoutProfile.address);
-  if (method === "postomat") setCheckoutValue("postomat", checkoutProfile.address);
-  if (method === "courier") setCheckoutValue("street", checkoutProfile.address);
+async function loadCheckoutConfig() {
+  checkoutConfig = await window.UrbanWearStore.api("/api/config");
+  const onlineInput = document.querySelector('input[name="payment"][value="online"]');
+  const hint = document.getElementById("liqpayPaymentHint");
+  onlineInput.disabled = !checkoutConfig.payment?.enabled;
+  if (hint && checkoutConfig.payment?.enabled) hint.textContent = "Оплата карткою, Apple Pay або Google Pay";
+  if (hint && !checkoutConfig.payment?.enabled) hint.textContent = "Вимкнено у презентаційній демо-версії";
 }
 
-function autofillCheckoutProfile() {
-  if (!checkoutProfile) return;
-  if (checkoutProfile.useAsDefault || checkoutProfile.autofillPersonalData) {
-    setCheckoutValue("firstName", checkoutProfile.firstName);
-    setCheckoutValue("lastName", checkoutProfile.lastName);
-    setCheckoutValue("email", checkoutProfile.email);
-    setCheckoutValue("phone", checkoutProfile.phone);
-  }
-  if (checkoutProfile.useAsDefault || checkoutProfile.defaultAddressEnabled) {
-    autofillDeliveryProfile();
-    setCheckoutValue("deliveryComment", checkoutProfile.deliveryComment);
-  }
-  if (checkoutProfile.useAsDefault || checkoutProfile.defaultPaymentEnabled) {
-    const defaultPayment = checkoutForm.querySelector('input[name="payment"][value="full"]');
-    if (defaultPayment) defaultPayment.checked = true;
-  }
-}
-
-function getSelectedText(name) {
-  return checkoutForm.querySelector(`input[name="${name}"]:checked`)?.closest(".checkout-option")?.querySelector("strong")?.textContent.trim() || "";
-}
-
-function collectOrder() {
-  const data = new FormData(checkoutForm);
-  const rows = getCheckoutRows();
-  return {
-    customer: { name: `${data.get("firstName")} ${data.get("lastName")}`.trim(), phone: data.get("phone"), email: data.get("email"), city: data.get("city") },
-    delivery: { method: getSelectedText("delivery"), city: data.get("city"), branch: data.get("branch") || data.get("postomat") || [data.get("street"), data.get("house"), data.get("apartment")].filter(Boolean).join(", "), comment: data.get("deliveryComment") || "" },
-    payment: { method: getSelectedText("payment") },
-    items: rows.map((row) => ({ id: row.id, title: row.product.title, price: row.price, quantity: row.quantity, image: row.product.images?.[0] || "", size: row.options.size || "" })),
-    total: getCheckoutTotals().total,
-    promo: localStorage.getItem("urbanwear-promo") || "",
-  };
-}
-
-checkoutForm.addEventListener("submit", (event) => {
+checkoutForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!checkoutForm.reportValidity()) return;
-  if (!getCheckoutRows().length) { checkoutMessage.textContent = "Кошик порожній."; return; }
-  const order = window.UrbanWearOrders.createOrder(collectOrder());
-  window.UrbanWearCart.clearCart();
-  checkoutForm.hidden = true;
-  document.querySelector(".checkout-header").hidden = true;
-  checkoutSuccess.hidden = false;
-  checkoutSuccessBenefits.hidden = false;
-  checkoutSuccessNumber.textContent = order.number;
+  const rows = window.UrbanWearCart.getCartRows();
+  if (!rows.length) return;
+  const data = new FormData(checkoutForm);
+  checkoutSubmitButton.disabled = true;
+  checkoutMessage.textContent = "Створюємо замовлення...";
+  try {
+    const payload = await window.UrbanWearStore.api("/api/orders", {
+      method: "POST",
+      body: JSON.stringify({
+        customer_name: `${data.get("firstName")} ${data.get("lastName")}`.trim(),
+        customer_email: data.get("email"),
+        customer_phone: data.get("phone"),
+        customer_city: data.get("city"),
+        delivery_service: checkoutForm.querySelector('input[name="delivery"]:checked')?.closest(".checkout-option")?.querySelector("strong")?.textContent.trim() || "Нова пошта",
+        delivery_office: data.get("office"),
+        comment: data.get("deliveryComment") || "",
+        payment_method: data.get("payment") || "cod",
+        legal_consent: data.get("legalConsent") === "on",
+        idempotency_key: checkoutIdempotencyKey,
+        items: rows.map((row) => ({ product_id: row.product.id, selected_size: row.options.size, quantity: row.quantity, price: row.product.priceValue })),
+      }),
+    });
+    window.UrbanWearOrders.rememberOrder(payload.order, String(data.get("email") || ""));
+    window.UrbanWearCart.clearCart();
+    checkoutForm.hidden = true;
+    document.querySelector(".checkout-header").hidden = true;
+    document.getElementById("checkoutSuccess").hidden = false;
+    document.getElementById("checkoutSuccessBenefits").hidden = false;
+    document.getElementById("checkoutSuccessNumber").textContent = payload.order.number;
+  } catch (error) {
+    checkoutMessage.textContent = error.message;
+    checkoutSubmitButton.disabled = false;
+  }
 });
 
-document.querySelectorAll(".checkout-option input").forEach((input) => {
-  input.addEventListener("change", () => {
-    document.querySelectorAll(`input[name="${input.name}"]`).forEach((radio) => radio.closest(".checkout-option").classList.toggle("is-selected", radio.checked));
-    if (input.name === "delivery") renderDeliveryFields();
-  });
+document.querySelectorAll(".checkout-option input").forEach((input) => input.addEventListener("change", () => {
+  document.querySelectorAll(`input[name="${input.name}"]`).forEach((radio) => radio.closest(".checkout-option").classList.toggle("is-selected", radio.checked));
+  if (input.name === "delivery") renderDeliveryFields();
+}));
+
+document.getElementById("copyOrderNumberButton").addEventListener("click", async () => {
+  await navigator.clipboard?.writeText(document.getElementById("checkoutSuccessNumber").textContent);
 });
 
 renderDeliveryFields();
-renderCheckoutSummary();
-
-if (checkoutSession?.role === "customer" && !checkoutProfile?.autofillPersonalData && !checkoutProfile?.useAsDefault) {
-  const nameParts = checkoutSession.name.trim().split(/\s+/);
-  checkoutForm.elements.firstName.value = nameParts[0] || "";
-  checkoutForm.elements.lastName.value = nameParts.slice(1).join(" ");
-  checkoutForm.elements.email.value = checkoutSession.email || "";
-}
-autofillCheckoutProfile();
-
-copyOrderNumberButton.addEventListener("click", async () => {
-  const value = checkoutSuccessNumber.textContent;
-  try {
-    await navigator.clipboard.writeText(value);
-    copyOrderNumberButton.textContent = "✓";
-  } catch (error) {
-    copyOrderNumberButton.textContent = value;
-  }
-});
+window.UrbanWearStore.ready.then(async () => {
+  renderCheckout();
+  await loadCheckoutConfig();
+}).catch((error) => { checkoutMessage.textContent = error.message; });

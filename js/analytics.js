@@ -1,5 +1,9 @@
 const URBANWEAR_ANALYTICS_KEY = "urbanwear-analytics";
 
+function analyticsAllowed() {
+  return Boolean(window.UrbanWearCookies?.getConsent()?.analytics);
+}
+
 function getAnalyticsData() {
   try {
     const savedData = localStorage.getItem(URBANWEAR_ANALYTICS_KEY);
@@ -14,10 +18,12 @@ function getAnalyticsData() {
 }
 
 function saveAnalyticsData(data) {
+  if (!analyticsAllowed()) return;
   localStorage.setItem(URBANWEAR_ANALYTICS_KEY, JSON.stringify(data));
 }
 
 function trackAnalyticsEvent(type, payload = {}) {
+  if (!analyticsAllowed()) return;
   const data = getAnalyticsData();
 
   data.events.push({
@@ -110,4 +116,12 @@ document.addEventListener("DOMContentLoaded", () => {
       label: link.textContent.trim(),
     });
   });
+});
+
+window.addEventListener("urbanwear:cookie-consent", (event) => {
+  if (event.detail?.analytics) {
+    trackAnalyticsEvent("page-view", { title: document.title, source: "consent" });
+  } else {
+    localStorage.removeItem(URBANWEAR_ANALYTICS_KEY);
+  }
 });

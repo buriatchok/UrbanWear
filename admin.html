@@ -6,7 +6,8 @@
   <meta name="description" content="Панель керування магазином UrbanWear: товари, замовлення, покупці та аналітика." />
   <title>Панель керування — UrbanWear</title>
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/admin-dashboard.css?v=categories-1" />
+  <link rel="stylesheet" href="css/admin-dashboard.css?v=local-actions-1" />
+  <link rel="stylesheet" href="css/admin-fixes.css?v=image-crop-1" />
 </head>
 <body class="admin-page">
   <section class="admin-login" id="adminLoginGate">
@@ -14,8 +15,8 @@
       <p class="label">Панель керування</p>
       <h1>Вхід адміністратора</h1>
       <p class="auth-note">Використайте дані адміністратора для входу в панель керування.</p>
-      <label>Email <input type="email" name="email" value="admin@urbanwear.local" required /></label>
-      <label>Пароль <input type="password" name="password" value="admin123" required /></label>
+      <label>Email <input type="email" name="email" autocomplete="username" required /></label>
+      <label>Пароль <input type="password" name="password" autocomplete="current-password" required /></label>
       <button class="btn btn--dark" type="submit">Увійти</button>
       <a href="index.html" class="btn btn--light">Назад на сайт</a>
       <p class="form-message" id="adminLoginMessage" role="status" aria-live="polite"></p>
@@ -46,7 +47,7 @@
           <div class="admin-profile-card__avatar">A</div>
           <div>
             <strong>UrbanWear Admin</strong>
-            <span>admin@urbanwear.local</span>
+            <span>admin@urbanwear.com</span>
           </div>
         </div>
         <div class="admin-sidebar__actions">
@@ -55,6 +56,8 @@
         </div>
       </div>
     </aside>
+
+    <button class="admin-sidebar-backdrop" id="adminSidebarBackdrop" type="button" aria-label="Закрити меню"></button>
 
     <section class="admin-workspace">
       <div class="admin-topbar">
@@ -210,6 +213,16 @@
                 <label class="admin-field-wide">Головний заголовок <textarea rows="2" data-setting="heroTitle"></textarea></label>
                 <label class="admin-field-wide">Текст у hero <textarea rows="3" data-setting="heroText"></textarea></label>
                 <label>Підпис візуального блоку <input type="text" data-setting="heroVisualText" /></label>
+                <div class="admin-field-wide admin-hero-image-field">
+                  <span>Спільна картинка hero для мобільної та ПК-версії</span>
+                  <label class="admin-upload-zone" for="heroImageInput">
+                    <input type="file" id="heroImageInput" accept="image/png,image/jpeg,image/webp" />
+                    <strong>Завантажити картинку</strong>
+                    <span>PNG, JPG або WEBP до 5 MB</span>
+                  </label>
+                  <div class="admin-hero-image-preview" id="heroImagePreview"></div>
+                  <button class="admin-clear-images" type="button" id="clearHeroImageButton">Очистити картинку</button>
+                </div>
               </div>
             </fieldset>
             <fieldset class="admin-fieldset">
@@ -236,17 +249,25 @@
 
         <section class="admin-panel" data-admin-panel="settings">
           <div class="admin-settings-grid">
-            <article class="admin-action-card">
-              <div><h2>Зберегти зміни</h2><p>Записати поточні тексти й налаштування у браузері.</p></div>
-              <button class="btn btn--dark" type="button" data-save-settings>Зберегти зміни</button>
-            </article>
-            <article class="admin-action-card">
-              <div><h2>Повернути останні збережені</h2><p>Скасувати зміни в полях, які ще не були збережені.</p></div>
-              <button class="btn btn--light" type="button" id="revertChangesButton">Повернути останні збережені</button>
-            </article>
-            <article class="admin-action-card">
-              <div><h2>Відновити початкові дані</h2><p>Повернути базові товари та тексти магазину UrbanWear.</p></div>
-              <button class="btn btn--light" type="button" id="resetDataButton">Відновити дані</button>
+            <form class="admin-editor-card" id="adminPasswordForm">
+              <div class="admin-card__header">
+                <div><h2>Безпека адміністратора</h2><p>Після зміни пароля всі старі сесії буде завершено.</p></div>
+              </div>
+              <div class="admin-form-grid">
+                <label>Поточний пароль <input type="password" name="current_password" autocomplete="current-password" required /></label>
+                <label>Новий пароль <input type="password" name="new_password" minlength="12" autocomplete="new-password" required /></label>
+                <label>Повторіть новий пароль <input type="password" name="confirm_password" minlength="12" autocomplete="new-password" required /></label>
+              </div>
+              <div class="admin-category-actions">
+                <button class="btn btn--dark" type="submit">Змінити пароль</button>
+              </div>
+            </form>
+            <article class="admin-editor-card">
+              <div class="admin-card__header">
+                <div><h2>Журнал дій</h2><p>Останні входи та зміни товарів, категорій і замовлень.</p></div>
+                <button class="btn btn--light" type="button" id="refreshAuditLogsButton">Оновити</button>
+              </div>
+              <div class="admin-table-scroll" id="adminAuditLogs"></div>
             </article>
           </div>
         </section>
@@ -259,10 +280,10 @@
           <button type="button" id="closeProductPanelButton" aria-label="Закрити">×</button>
         </div>
         <div class="admin-drawer-tabs" role="tablist" aria-label="Розділи товару">
-          <button class="is-active" type="button" data-product-drawer-tab="general">Основне</button>
-          <button type="button" data-product-drawer-tab="details">Деталі</button>
+          <button class="is-active" type="button" id="productGeneralTab" role="tab" aria-selected="true" aria-controls="productGeneralPanel" data-product-drawer-tab="general">Основне</button>
+          <button type="button" id="productDetailsTab" role="tab" aria-selected="false" aria-controls="productDetailsPanel" data-product-drawer-tab="details">Деталі</button>
         </div>
-        <div class="admin-product-drawer-panel is-active" data-product-drawer-panel="general">
+        <div class="admin-product-drawer-panel is-active" id="productGeneralPanel" role="tabpanel" aria-labelledby="productGeneralTab" aria-hidden="false" data-product-drawer-panel="general">
           <div class="admin-form-grid">
             <label>ID товару <input type="text" id="productIdInput" placeholder="new-product-id" /></label>
             <label>Назва товару <input type="text" id="productTitleInput" required /></label>
@@ -281,8 +302,12 @@
               <span class="admin-field-label">Фото товару</span>
               <label class="admin-upload-zone" for="productImagesInput">
                 <input type="file" id="productImagesInput" accept="image/png,image/jpeg,image/webp" multiple />
-                <strong>Завантажити фото</strong><span>PNG, JPG або WEBP до 5MB</span>
+                <strong>Завантажити фото</strong><span>PNG, JPG або WEBP до 5MB. Після завантаження можна обрізати.</span>
               </label>
+              <div class="admin-image-url-row">
+                <input type="url" id="productImageUrlInput" placeholder="https://cdn.example.com/product.webp" />
+                <button class="admin-clear-images" type="button" id="addProductImageUrlButton">Додати URL зі сховища</button>
+              </div>
               <div class="admin-image-preview" id="productImagesPreview"></div>
               <button class="admin-clear-images" type="button" id="clearProductImagesButton">Очистити фото</button>
             </div>
@@ -292,7 +317,7 @@
             </label>
           </div>
         </div>
-        <div class="admin-product-drawer-panel" data-product-drawer-panel="details">
+        <div class="admin-product-drawer-panel" id="productDetailsPanel" role="tabpanel" aria-labelledby="productDetailsTab" aria-hidden="true" data-product-drawer-panel="details">
           <div class="admin-form-grid">
             <label class="admin-field-wide">Короткий опис <textarea rows="2" id="productShortInput"></textarea></label>
             <label class="admin-field-wide">Повний опис <textarea rows="4" id="productDescriptionInput"></textarea></label>
@@ -309,10 +334,43 @@
     </section>
   </main>
 
-  <script src="js/products.js?v=categories-1"></script>
-  <script src="js/auth.js"></script>
+  <div class="admin-crop-backdrop" id="adminCropBackdrop" hidden></div>
+  <section class="admin-crop-modal" id="adminCropModal" aria-hidden="true" aria-labelledby="adminCropTitle" role="dialog" hidden>
+    <div class="admin-crop-modal__head">
+      <div>
+        <p>Редактор фото товару</p>
+        <h2 id="adminCropTitle">Обрізати під формат каталогу 4:5</h2>
+      </div>
+      <button type="button" id="adminCropCloseButton" aria-label="Закрити редактор">×</button>
+    </div>
+    <div class="admin-crop-workspace">
+      <div class="admin-crop-canvas-wrap">
+        <canvas id="adminCropCanvas" width="800" height="1000"></canvas>
+      </div>
+      <div class="admin-crop-controls">
+        <label>Масштаб
+          <input type="range" id="adminCropZoom" min="1" max="3" step="0.01" value="1" />
+        </label>
+        <label>По горизонталі
+          <input type="range" id="adminCropX" min="-100" max="100" step="1" value="0" />
+        </label>
+        <label>По вертикалі
+          <input type="range" id="adminCropY" min="-100" max="100" step="1" value="0" />
+        </label>
+        <p>Рухайте повзунки, доки товар повністю та охайно поміститься у рамці.</p>
+      </div>
+    </div>
+    <div class="admin-crop-actions">
+      <button class="btn btn--light" type="button" id="adminCropCancelButton">Скасувати</button>
+      <button class="btn btn--dark" type="button" id="adminCropApplyButton">Застосувати обрізання</button>
+    </div>
+  </section>
+
+  <script src="js/products.js?v=secure-cookie-1"></script>
+  <script src="js/auth.js?v=secure-cookie-1"></script>
   <script src="js/analytics.js"></script>
   <script src="js/orders.js"></script>
-  <script src="js/admin.js?v=categories-1"></script>
+  <script src="js/admin.js?v=secure-cookie-1"></script>
+  <script src="js/demo-mode.js"></script>
 </body>
 </html>
